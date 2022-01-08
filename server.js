@@ -68,6 +68,11 @@ app.get("/results/:id", (req, res) => {
   res.render("poll_result");
 });
 
+app.post("/polls", (req, res) => {
+});
+
+app.post("/polls/:id", (req, res) => {
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
