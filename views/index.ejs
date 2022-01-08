@@ -40,15 +40,20 @@
 
       $(document).ready(() => {
 
-        let optionsCount = 0;
         const insertOption = function (optionsCount) {
-
           $('#options-container').append(`
-        <input type="text" name="title${optionsCount}" class="form-control" placeholder="Title">
-        <input type="text" name="description${optionsCount}" class="form-control" placeholder="description">
-        <br>
-        `
+          <input type="text" name="title${optionsCount}" class="form-control" placeholder="Title">
+          <input type="text" name="description${optionsCount}" class="form-control" placeholder="description">
+          <br>
+          `
           )
+        }
+        let optionsCount = 0;
+
+        //render 2 instances of options on page load, assuming you need to pick between 2 options in a decision maker app
+        for (let i = 0; i < 2; i++) {
+          insertOption(optionsCount)
+          optionsCount +=1
         }
         $('#new-option').on('click', (event) => {
           event.preventDefault()
