@@ -20,19 +20,20 @@
     </div>
     <section>
       <form action="/poll" method="POST">
-        <div class='enterEmail'>
-          <label for='enter-email'></label>
-          <input type="email" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
-          <div class="submitEmail">
-          <button class="subButton" type="submit">Create Poll</button>
+          <label for='enter-email'>Email</label>
+          <input type="email" class="form-control" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
 
+          <button class="subButton btn btn-primary" type="submit">Create Poll</button>
+
+          <div class="poll-question form-control">
+            <textarea class="form-control" placeholder="Burning questions that need answering"></textarea>
           </div>
           <div id="options-container">
 
           </div>
           <br>
-          <button id="new-option">Add another option</button>
-          <input type="submit" value="Create Poll">
+          <button id="new-option" class="btn btn-primary">Add another option</button>
+          <input type="submit" class="btn btn-primary" value="Create Poll">
       </form>
     </section>
 
