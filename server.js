@@ -52,6 +52,21 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+app.get("/polls/new", (req, res) => {
+  res.render("poll_form");
+});
+
+app.get("/polls/:id", (req, res) => {
+  res.render("show_poll");
+});
+
+app.get("/share/:id", (req, res) => {
+  res.render("links_share");
+});
+
+app.get("/results/:id", (req, res) => {
+  res.render("poll_result");
+});
 
 
 app.listen(PORT, () => {
