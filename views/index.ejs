@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
   <link rel="stylesheet" href="/styles/main.css" type="text/css" />
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet">
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="/scripts/app.js"></script>
@@ -16,29 +17,48 @@
 
 <body>
   <%- include('partials/_header') %>
-  <%
-  let optionCount = 1;
-  %>
-</div>
-<section>
-  <form action="/poll" method="POST">
-      <div class='enterEmail'>
-        <label for='enter-email'></label>
-        <input type="email" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
-      <div class="submitEmail">
-        <button class="subButton" type="submit">Create Poll</button>
-        <br>
-      <% for(let i = 0; i < 2; i++) {%>
-        <input type="text" name="title<%= i %>" class="form-control" placeholder="Title">
-        <input type="text" name="description<%= i %>" class="form-control" placeholder="description">
-        <br>
-      <% } %>
-      <button id="new-option">Add another option</button>
-      <input type="submit" value="Create Poll">
-    </form>
-  </section>
+    </div>
+    <section>
+      <form action="/poll" method="POST">
+        <div class='enterEmail'>
+          <label for='enter-email'></label>
+          <input type="email" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
+          <div class="submitEmail">
+          <button class="subButton" type="submit">Create Poll</button>
 
-  <h1>Have fun! 🥔🥔🥔🥔🥔🥔🥔</h1>
+          </div>
+          <div id="options-container">
+
+          </div>
+          <br>
+          <button id="new-option">Add another option</button>
+          <input type="submit" value="Create Poll">
+      </form>
+    </section>
+
+    <script>
+
+      $(document).ready(() => {
+
+        let optionsCount = 0;
+        const insertOption = function (optionsCount) {
+
+          $('#options-container').append(`
+        <input type="text" name="title${optionsCount}" class="form-control" placeholder="Title">
+        <input type="text" name="description${optionsCount}" class="form-control" placeholder="description">
+        <br>
+        `
+          )
+        }
+        $('#new-option').on('click', (event) => {
+          event.preventDefault()
+          insertOption(optionsCount)
+          optionsCount += 1
+        })
+      })
+
+
+    </script>
 </body>
 
 </html>
