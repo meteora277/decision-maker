@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Home Page</title>
+  <title>Decision Maker</title>
 
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
@@ -14,21 +14,28 @@
 </head>
 
 <body>
-  <header>
-    <nav>
-      <span class='logo'>Decision maker 🥔 </span>
-    </nav>
-  </header>
-
-
+  <%- include('partials/_header') %>
+  <%
+  let optionCount = 1;
+  %>
   <div class='enterEmail'>
     <label for='enter-email'></label>
     <textarea name="text" placeholder="Enter email adress" id='enter-email'></textarea>
   </div>
-
   <div class="submitEmail">
     <button class="subButton" type="submit">Create Poll</button>
   </div>
+  <section>
+    <form action="/poll" method="POST">
+      <% for(let i = 0; i < 2; i++) {%>
+        <input type="text" name="title<%= i %>" class="form-control" placeholder="Title">
+        <input type="text" name="description<%= i %>" class="form-control" placeholder="description">
+        <br>
+      <% } %>
+      <button id="new-option">Add another option</button>
+      <input type="submit" value="Create Poll">
+    </form>
+  </section>
 
   <h1>Have fun! 🥔🥔🥔🥔🥔🥔🥔</h1>
 </body>
