@@ -5,6 +5,7 @@
   <title>Decision Maker</title>
 
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/results.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
   <link rel="stylesheet" href="/styles/main.css" type="text/css" />
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
@@ -22,13 +23,15 @@
 <body>
   <%- include('partials/_header') %>
 
-  <h1>Voting Page</h1>
-  <p>Please drag and drop the items to rank your choices.</p>
-  <ul class= "draggable-list" id="draggable-list"></ul>
-  <button class="submit-poll" id="submit-poll">
-    Submit Response
-    <i class="fas fa-angle-double-down"></i>
-  </button>
+  <section class=choices-list>
+    <h1>Voting Page</h1>
+    <p>Please drag and drop the items to rank your choices.</p>
+    <ul class= "draggable-list" id="draggable-list"></ul>
+    <button class="submit-poll-btn" id="submit-poll-btn">
+      Submit Response
+      <i class="fas fa-angle-double-down"></i>
+    </button>
+  </section>
 
 
 </body>

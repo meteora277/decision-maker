@@ -22,15 +22,15 @@ createList();
 
 function createList() {
   //Spread operator allows us to copy the original order of the array
-  [...myChoices].forEach((person, index) => {
+  [...myChoices].forEach((choice, index) => {
       const listItem = document.createElement('li');
 
       listItem.setAttribute('data-index', index);
 
       listItem.innerHTML = `
       <span class="number">${index + 1}</span>
-      <div class="dragggable" draggable="true">
-        <p class="person-name">${person}</p>
+      <div class="draggable" draggable="true">
+        <p class="choice-name">${choice}</p>
         <i class = "fas fa-grip-lines"></i>
       </div>
       `;
