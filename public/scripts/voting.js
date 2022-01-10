@@ -1,22 +1,18 @@
 const draggable_list = document.getElementById('draggable-list');
 const check = document.getElementById('submit-poll-btn');
 
-console.log("hi");
-
 //hard-coding array in correct order
 const myChoices = [
-  'apple',
-  'orange',
-  'banana',
-  'peach',
-  'watermelon',
-  'pomegrante',
-  'strawberry'
+  ['apple', 'keeps the doctor away'],
+  ['orange','lots of vitamin C'],
+  ['banana','lotsa potassium'],
+  ['watermelon', 'green on outside, red on inside'],
+  ['pomegrante', 'best fruit ever'],
+  ['strawberry', 'not really a berry apparently']
 ];
 
 //Store listitems
 const listItems = [];
-
 let dragStartIndex;
 
 //Insert list items into DOM
@@ -26,17 +22,15 @@ function createList() {
   //Spread operator allows us to copy the original order of the array
   [...myChoices].forEach((choice, index) => {
       const listItem = document.createElement('li');
-
       listItem.setAttribute('data-index', index);
-
       listItem.innerHTML = `
       <span class="number">${index + 1}</span>
       <div class="draggable" draggable="true">
-        <p class="choice-name">${choice}</p>
+        <h4 class="choice-name">${choice[0]}</h4>
+        <p class="description-name">${choice[1]}</p>
         <i class = "fas fa-grip-lines"></i>
       </div>
       `;
-
       listItems.push(listItem);
       draggable_list.appendChild(listItem);
     });
@@ -76,10 +70,9 @@ function rankedOrder() {
     const choiceName= listItem.querySelector('.draggable').innerText.trim();
     rankedChoices.push(choiceName);
   })
-  console.log(rankedChoices);
+  rankedChoices.forEach(choice => {console.log(choice)})
   return rankedChoices;
 }
-
 
 //dragOver exists so that whenever a dragover event happens, the default behaviour is prevented, enabling drop to work.
 function dragOver(e) {

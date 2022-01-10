@@ -65,8 +65,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px;
   flex: 1;
+}
+
+.choice-name {
+  padding: 0 10px 0 10px;
 }
 
 .submit-poll-btn {
@@ -84,4 +87,8 @@
 
 .submit-poll-btn:focus {
   outline: none;
+}
+
+.fa-solid, .fas {
+  padding: 0 20px 0 30px;
 }
