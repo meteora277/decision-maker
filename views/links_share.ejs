@@ -36,6 +36,7 @@
       <h1>Share Link Ready to Share with Friends</h1>
       <a href="#">ShareLink</a>
     </div>
+    <input type="text" value="LinkShare" id="myInput">
     <!-- The button used to copy the text -->
     <button onclick="myFunction()">Copy text to clipboard</button>
 
@@ -46,6 +47,23 @@
     <p> ✅ Only you can see poll result</p>
     <p> ✅ Click after everyone is done poll</p>
   </div>
+
+  <script>
+    function myFunction() {
+  /* Get the text field */
+  var copyText = document.getElementById("myInput");
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+   /* Copy the text inside the text field */
+  navigator.clipboard.writeText(copyText.value);
+
+  /* Alert the copied text */
+  alert("Copied the text: " + copyText.value);
+}
+  </script>
 
 </body>
 
