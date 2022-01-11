@@ -90,26 +90,49 @@ app.get("/results/:id", (req, res) => {
 
 
 const createNewPoll = (poll) => {
-  const {email_address, question, anonymous, admin_link, poll_link} = poll
-  return pool
-    .query(`INSERT INTO polls (email_address, question, anonymous, admin_link, poll_link)
-    VALUES ($1, $2, $3, $4, $5)
+  const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll
+  return db
+    .query(`INSERT INTO polls (email_address, question, admin_link, poll_link, is_active, anonymous)
+    VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *; `,
-    [email_address, question, anonymous, admin_link, poll_link])
+    [email_address, question, admin_link, poll_link, is_active, anonymous])
     .then((result) => result.rows[0])
     .catch((err) => {
       console.log(err.message)
     })
 }
+
 app.post("/polls", (req, res) => {
   // gen random link
+/*   console.log(Object.keys(req.body));
+  console.log("email:", req.body.email, "title:", req.body.title0, "description:", req.body.description0) */
 
-  // db query - INSERT INTO polls
+  // const keyArray = Object.keys(req.body)
+
+  // keyArray.forEach( key => {
+  //   req.body[key] =>
+  // })
+
+  const pollLink = generateRandomString();
+  const adminLink = generateRandomString();
+
+  const newPoll = {
+    email_address: req.body.email,
+    question: req.body.question,
+    anonymous: false,
+    admin_link: adminLink,
+    poll_link: pollLink,
+    is_active: true
+  }
+  console.log("New Poll:", newPoll);
+  createNewPoll(newPoll);
+
+/*   // db query - INSERT INTO polls
   const poll = {email_address, question, anonymous} //get this from body
   createNewPoll(poll)
 
   //res.redirect --> /share/:id right after inserting. async await
-  res.redirect('/share/:id')
+  res.redirect('/share/:id') */
 });
 
 app.post("/polls/:id", (req, res) => {
