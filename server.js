@@ -91,7 +91,7 @@ app.get("/results/:id", (req, res) => {
 
 
 const createNewPoll = (poll) => {
-  const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll
+  const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll;
   return db
     .query(`INSERT INTO polls (email_address, question, admin_link, poll_link, is_active, anonymous)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -99,20 +99,28 @@ const createNewPoll = (poll) => {
     [email_address, question, admin_link, poll_link, is_active, anonymous])
     .then((result) => result.rows[0])
     .catch((err) => {
-      console.log(err.message)
+      console.log(err.message);
     });
 };
 
 const createNewChoice = (choice) => {
   const {poll_id, title, description} = choice;
   return db
-  .query()
+    .query(`
+    INSERT INTO choices (poll_id, title, description)
+    VALUES ( $1, $2 , $3)
+    RETURNING *;
+    `,[poll_id, title, description])
+    .then((result) => console.log(result.rows[0]))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
 
-}
 
 app.post("/polls", (req, res) => {
-  // gen random link
-/*   console.log(Object.keys(req.body));
+
+  /*   console.log(Object.keys(req.body));
   console.log("email:", req.body.email, "title:", req.body.title0, "description:", req.body.description0) */
 
   // const keyArray = Object.keys(req.body)
@@ -131,18 +139,22 @@ app.post("/polls", (req, res) => {
     admin_link: adminLink,
     poll_link: pollLink,
     is_active: true
-  }
+  };
+
   console.log("New Poll:", newPoll);
   createNewPoll(newPoll);
 
-/*   // db query - INSERT INTO polls
-  const poll = {email_address, question, anonymous} //get this from body
-  createNewPoll(poll)
+  console.log(req.body);
 
+  let titles = Object.keys(req.body);
+  let filteredTitles = [];
 
+  titles.forEach(title => {
+    if (/^title/.test(title)) {
+      filteredTitles.push(title);
+    }
+  });
 
-  //res.redirect --> /share/:id right after inserting. async await
-  res.redirect('/share/:id') */
 });
 
 app.post("/polls/:id", (req, res) => {
