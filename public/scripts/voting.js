@@ -27,7 +27,7 @@ function createList() {
       listItem.setAttribute('data-index', index);
       listItem.innerHTML = `
       <span class="number">${index + 1}</span>
-      <div class="draggable" draggable="true">
+      <div class="draggable" draggable="true" data-choice="${choice[0]}">
         <h4 class="choice-name">${choice[0]}</h4>
         <p class="description-name">${choice[1]}</p>
         <i class = "fas fa-grip-lines"></i>
@@ -42,32 +42,18 @@ function createList() {
 //Save the order items were ranked in an array
 function rankedOrder() {
   listItems.forEach((listItem) => {
-    const choiceName= listItem.querySelector('.draggable').innerText.trim();
+    const choiceName= listItem.querySelector('.draggable').getAttribute("data-choice").trim();
     rankedChoices.push(choiceName);
   })
+  console.log("array of ranked choices:", rankedChoices);
   rankedChoices.forEach(choice => {console.log(choice)})
-  submitPollForm()
-  return rankedChoices;
+
+  //submitPollForm()
+  console.log("rankedChoices", {rankedChoices});
+  $.post(`/polls/${window.poll_id}` , {rankedChoices}, function(data){
+    console.log("Data:", data);
+  })
 }
-
-/* function submitPollForm() {
-  const vote = document.querySelector('.hidden-form');
-
-  vote.innerHTML = `
-    <form id="myForm" name="myVote" method="POST" action="/polls/1">
-    <input class="form-control" name="email">
-
-    <div class="d-flex justify-content-center">
-    <button type="submit" class="btn btn-primary btn-lg">submit</button>
-    </div>
-    </form>
-    `
-
-  document.getElementById("myForm").submit();
-  console.log("content of hidden-form test:", vote.innerHTML);
-
-
-} */
 
 function dragStart() {
   //Look at DOM, find closest li, and get the atrribute of data-index

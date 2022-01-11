@@ -68,7 +68,13 @@ app.get("/polls/new", (req, res) => {
 });
 
 app.get("/polls/:id", (req, res) => {
-  res.render("show_poll");
+  const templateVars = {
+    poll_id: req.params.id,
+  }
+
+
+  res.render("show_poll", templateVars);
+
 });
 
 app.get("/share/:id", (req, res) => {
@@ -198,14 +204,24 @@ app.post("/polls", (req, res) => {
 
     });
   res.redirect(`/share/${pollLink}`);
-
-
-
 });
 
 
 
 app.post("/polls/:id", (req, res) => {
+  console.log("req.body:", req.body);
+  console.log("req.params:", req.params.id);
+  res.status(200).send("ok");
+
+  console.log("i want the array:", req.body.rankedChoices)
+
+
+
+/*   const calculateVoteWeight = (choice, rankedArray) => {
+
+
+  }
+ */
 });
 
 app.listen(PORT, () => {
