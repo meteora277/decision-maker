@@ -163,8 +163,8 @@ app.post("/polls", (req, res) => {
 
         let newChoice = {
           poll_id: createdPoll.id,
-          title: title,
-          description: filteredDescriptions[index]
+          title: req.body[title],
+          description: req.body[filteredDescriptions[index]]
         };
         createNewChoice(newChoice);
       });
@@ -173,7 +173,7 @@ app.post("/polls", (req, res) => {
       console.log(filteredTitles);
 
     });
-
+  res.redirect('/share/:id');
 
 });
 
