@@ -89,7 +89,6 @@ app.get("/results/:id", (req, res) => {
 // if same func is used call it twice for admin link
 // get annonymous param from body
 
-
 const createNewPoll = (poll) => {
   const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll;
   return db
@@ -111,7 +110,7 @@ const createNewChoice = (choice) => {
     VALUES ( $1, $2 , $3)
     RETURNING *;
     `,[poll_id, title, description])
-    .then((result) => console.log(result.rows[0]))
+    .then((result) => result.rows[0])
     .catch((err) => {
       console.log(err.message);
     });
@@ -142,20 +141,43 @@ app.post("/polls", (req, res) => {
   };
 
   console.log("New Poll:", newPoll);
-  createNewPoll(newPoll);
+  createNewPoll(newPoll)
+    .then((createdPoll) => {
 
-  console.log(req.body);
+      let keys = Object.keys(req.body);
+      let filteredTitles = [];
 
-  let titles = Object.keys(req.body);
-  let filteredTitles = [];
+      keys.forEach(title => {
+        if (/^title/.test(title)) {
+          filteredTitles.push(title);
+        }
+      });
+      let filteredDescriptions = [];
 
-  titles.forEach(title => {
-    if (/^title/.test(title)) {
-      filteredTitles.push(title);
-    }
-  });
+      keys.forEach(description => {
+        if (/^description/.test(description)) {
+          filteredDescriptions.push(description);
+        }
+      });
+      filteredTitles.forEach((title, index) => {
+
+        let newChoice = {
+          poll_id: createdPoll.id,
+          title: title,
+          description: filteredDescriptions[index]
+        };
+        createNewChoice(newChoice);
+      });
+      console.log(createdPoll, 'hewwo');
+      console.log(filteredDescriptions);
+      console.log(filteredTitles);
+
+    });
+
 
 });
+
+
 
 app.post("/polls/:id", (req, res) => {
 });
