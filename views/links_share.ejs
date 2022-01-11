@@ -19,30 +19,18 @@
 <body>
   <%- include('partials/_header') %>
 
-  <!-- <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">Decision Maker</a>
-      </div> -->
-
-  <header>
-    <nav>
-      <span class='logo'>Link Share Page!~~~Decision maker 🥔 </span>
-    </nav>
-  </header>
-
   <div class="share_link_container">
     <div class="jumbotron">
       <h1>Share Link Ready to Share with Friends</h1>
-      <a href="#">ShareLink</a>
+      <a href="http://localhost:8080/polls/<%= pollLink%>" >ShareLink</a>
     </div>
-    <input type="text" value="LinkShare" id="myInput">
+    <input type="text" value="http://localhost:8080/polls/<%= pollLink%>" id="myInput">
     <!-- The button used to copy the text -->
     <button onclick="myFunction()">Copy text to clipboard</button>
 
     <div class="jumbotron">
       <h1>Admin link - click to see poll result</h1>
-      <a href="#">AdminLink</a>
+      <a href="http://localhost:8080/results/<%= adminLink %>">AdminLink</a>
     </div>
     <p> ✅ Only you can see poll result</p>
     <p> ✅ Click after everyone is done poll</p>

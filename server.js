@@ -74,7 +74,20 @@ app.get("/polls/:id", (req, res) => {
 app.get("/share/:id", (req, res) => {
   // write the select queries after getting the id from the parents.
   // templateVars for the poll
-  res.render("links_share");
+  let pollLink = req.params.id;
+  getAdminLink(pollLink).then(poll => {
+    console.log("Testing poll:", poll);
+    let adminLink = poll.admin_link
+    let templateVars = {
+      pollLink,
+      adminLink,
+    }
+    res.render("links_share", templateVars);
+
+  })
+
+
+
 
 });
 
@@ -88,6 +101,17 @@ app.get("/results/:id", (req, res) => {
 //set result to poll_link
 // if same func is used call it twice for admin link
 // get annonymous param from body
+
+const getAdminLink = (pollLink) => {
+  return db
+    .query(`SELECT * FROM polls
+    WHERE poll_link = $1;`,
+    [pollLink])
+    .then((result) => result.rows[0])
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
 
 const createNewPoll = (poll) => {
   const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll;
@@ -173,7 +197,9 @@ app.post("/polls", (req, res) => {
       console.log(filteredTitles);
 
     });
-  res.redirect('/share/:id');
+  res.redirect(`/share/${pollLink}`);
+
+
 
 });
 
