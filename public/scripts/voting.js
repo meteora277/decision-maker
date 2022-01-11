@@ -1,7 +1,7 @@
 const draggable_list = document.getElementById('draggable-list');
-const check = document.getElementById('submit-poll-btn');
+const submit = document.getElementById('submit-poll-btn');
 
-//hard-coding array in correct order
+//hard-coding array in original order
 const myChoices = [
   ['apple', 'keeps the doctor away'],
   ['orange','lots of vitamin C'],
@@ -10,6 +10,8 @@ const myChoices = [
   ['pomegrante', 'best fruit ever'],
   ['strawberry', 'not really a berry apparently']
 ];
+
+const rankedChoices = [];
 
 //Store listitems
 const listItems = [];
@@ -34,9 +36,38 @@ function createList() {
       listItems.push(listItem);
       draggable_list.appendChild(listItem);
     });
-
     addEventListeners();
 }
+
+//Save the order items were ranked in an array
+function rankedOrder() {
+  listItems.forEach((listItem) => {
+    const choiceName= listItem.querySelector('.draggable').innerText.trim();
+    rankedChoices.push(choiceName);
+  })
+  rankedChoices.forEach(choice => {console.log(choice)})
+  submitPollForm()
+  return rankedChoices;
+}
+
+/* function submitPollForm() {
+  const vote = document.querySelector('.hidden-form');
+
+  vote.innerHTML = `
+    <form id="myForm" name="myVote" method="POST" action="/polls/1">
+    <input class="form-control" name="email">
+
+    <div class="d-flex justify-content-center">
+    <button type="submit" class="btn btn-primary btn-lg">submit</button>
+    </div>
+    </form>
+    `
+
+  document.getElementById("myForm").submit();
+  console.log("content of hidden-form test:", vote.innerHTML);
+
+
+} */
 
 function dragStart() {
   //Look at DOM, find closest li, and get the atrribute of data-index
@@ -49,7 +80,7 @@ function dragEnter() {
 }
 
 function dragLeave() {
-  //When leave element, remove "over" so that it is white dark anymore
+  //When leave element, remove "over" so that it is not dark anymore
   this.classList.remove('over');
 }
 
@@ -59,20 +90,11 @@ function swapItems(fromIndex, toIndex) {
   const itemOne = listItems[fromIndex].querySelector('.draggable');
   const itemTwo = listItems[toIndex].querySelector('.draggable');
 
+  //perform swap
   listItems[fromIndex].appendChild(itemTwo);
   listItems[toIndex].appendChild(itemOne);
 }
 
-//Save the order items were ranked in an array
-function rankedOrder() {
-  const rankedChoices = [];
-  listItems.forEach((listItem) => {
-    const choiceName= listItem.querySelector('.draggable').innerText.trim();
-    rankedChoices.push(choiceName);
-  })
-  rankedChoices.forEach(choice => {console.log(choice)})
-  return rankedChoices;
-}
 
 //dragOver exists so that whenever a dragover event happens, the default behaviour is prevented, enabling drop to work.
 function dragOver(e) {
@@ -108,4 +130,4 @@ function addEventListeners() {
   })
 }
 
-check.addEventListener('click', rankedOrder);
+submit.addEventListener('click', rankedOrder);
