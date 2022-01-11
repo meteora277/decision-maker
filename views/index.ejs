@@ -23,7 +23,7 @@
           <label for='enter-email'>Email</label>
           <input type="email" class="form-control" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
 
-          <button class="subButton btn btn-primary" type="submit">Create Poll</button>
+          <button id="email-button"class="subButton btn btn-primary" type="submit">Create Poll</button>
 
           <div class="poll-question form-control">
             <textarea class="form-control" placeholder="Burning questions that need answering"></textarea>
@@ -34,6 +34,7 @@
           <br>
           <button id="new-option" class="btn btn-primary">Add Another Option</button>
           <input type="submit" class="btn btn-primary" value="Create Poll">
+
       </form>
     </section>
 
@@ -59,6 +60,9 @@
           insertOption(optionsCount);
           optionsCount +=1;
         }
+        $("#email-button").on('click', () => {
+          event.preventDefault();
+        })
         $('#new-option').on('click', (event) => {
           event.preventDefault();
           insertOption(optionsCount);
