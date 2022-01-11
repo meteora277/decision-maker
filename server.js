@@ -110,7 +110,7 @@ const createNewChoice = (choice) => {
     VALUES ( $1, $2 , $3)
     RETURNING *;
     `,[poll_id, title, description])
-    .then((result) => console.log("the result rows:", result.rows[0]))
+    .then((result) => result.rows[0])
     .catch((err) => {
       console.log(err.message);
     });
