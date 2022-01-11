@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 // load .env data into process.env
 require("dotenv").config();
 
@@ -99,7 +100,14 @@ const createNewPoll = (poll) => {
     .then((result) => result.rows[0])
     .catch((err) => {
       console.log(err.message)
-    })
+    });
+};
+
+const createNewChoice = (choice) => {
+  const {poll_id, title, description} = choice;
+  return db
+  .query()
+
 }
 
 app.post("/polls", (req, res) => {
@@ -130,6 +138,8 @@ app.post("/polls", (req, res) => {
 /*   // db query - INSERT INTO polls
   const poll = {email_address, question, anonymous} //get this from body
   createNewPoll(poll)
+
+
 
   //res.redirect --> /share/:id right after inserting. async await
   res.redirect('/share/:id') */
