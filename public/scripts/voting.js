@@ -128,4 +128,7 @@ function addEventListeners() {
   })
 }
 
-submit.addEventListener('click', rankedOrder);
+submit.addEventListener('click', () => {
+  rankedOrder();
+  document.getElementsByClassName("choices-list")[0].innerHTML = "<h1> Thank you for voting! </h1>";
+});
