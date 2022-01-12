@@ -63,6 +63,7 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+//Not using?
 app.get("/polls/new", (req, res) => {
   res.render("poll_form");
 });
@@ -71,10 +72,7 @@ app.get("/polls/:id", (req, res) => {
   const templateVars = {
     poll_id: req.params.id,
   }
-
-
   res.render("show_poll", templateVars);
-
 });
 
 app.get("/share/:id", (req, res) => {
@@ -89,24 +87,12 @@ app.get("/share/:id", (req, res) => {
       adminLink,
     }
     res.render("links_share", templateVars);
-
   })
-
-
-
-
 });
 
 app.get("/results/:id", (req, res) => {
   res.render("poll_result");
 });
-
-// create body of the request with data from form.
-// Work on auto gen values
-// create poll attributes object (sep function two links)
-//set result to poll_link
-// if same func is used call it twice for admin link
-// get annonymous param from body
 
 const getAdminLink = (pollLink) => {
   return db
@@ -148,15 +134,6 @@ const createNewChoice = (choice) => {
 
 
 app.post("/polls", (req, res) => {
-
-  /*   console.log(Object.keys(req.body));
-  console.log("email:", req.body.email, "title:", req.body.title0, "description:", req.body.description0) */
-
-  // const keyArray = Object.keys(req.body)
-
-  // keyArray.forEach( key => {
-  //   req.body[key] =>
-  // })
 
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
@@ -207,7 +184,6 @@ app.post("/polls", (req, res) => {
 });
 
 
-
 app.post("/polls/:id", (req, res) => {
   console.log("req.body:", req.body);
   console.log("req.params:", req.params.id);
@@ -215,13 +191,19 @@ app.post("/polls/:id", (req, res) => {
 
   console.log("i want the array:", req.body.rankedChoices)
 
-
-
-/*   const calculateVoteWeight = (choice, rankedArray) => {
-
-
+  const calculateVoteWeight = (choice, rankedArray) => {
+    const index = rankedArray.indexOf(choice);
+    points = rankedArray.length - index;
+    return points;
   }
- */
+
+  req.body.rankedChoices.forEach( choice => {
+    const newVote = {
+      choice_id: getChoiceId(choice),
+      vote_weight: calculateVoteWeight(choice, req.body.rankedChoices),
+      name_id,
+    };
+  })
 });
 
 app.listen(PORT, () => {
