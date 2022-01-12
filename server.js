@@ -163,7 +163,7 @@ const getResultsFromAdminLink = async (pollId) => {
 //DATABSE SELECTION FUNCTION using poll link (choice and description)
 const getChoicesFromPollLink = async (pollId) => {
   return db.query(`
-    SELECT choices.id, title AS choice, choices.description
+    SELECT choices.id, title AS choice, choices.description, polls.question
     FROM choices JOIN polls ON poll_id = polls.id
     WHERE poll_link = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
   `, [pollId])
