@@ -69,10 +69,18 @@ app.get("/polls/new", (req, res) => {
 });
 
 app.get("/polls/:id", (req, res) => {
-  const templateVars = {
-    poll_id: req.params.id,
-  }
-  res.render("show_poll", templateVars);
+
+  getChoicesFromPollId(req.params.id)
+  .then((response) => {
+    console.log("RESPONSE**:", response);
+
+    const templateVars = {
+      potato: response,
+      poll_id: req.params.id,
+    }
+    res.render("show_poll", templateVars);
+  })
+
 });
 
 app.get("/share/:id", (req, res) => {
@@ -105,6 +113,20 @@ app.get("/results/:id", (req, res) => {
       console.log(err.message);
     });
 }; */
+
+//DATABSE SELECTION FUNCTION (choice and description)
+const getChoicesFromPollId = async (pollId) => {
+  return db.query(`
+    SELECT choices.id, title AS choice, choices.description
+    FROM choices JOIN polls ON poll_id = polls.id
+    WHERE polls.id = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
+  `, [pollId])
+    .then(res => res.rows)
+    .catch(err => console.log(err));
+};
+
+getChoicesFromPollId(1)
+.then((res) => console.log(res));
 
 //DATABASE SELECT FUNCTION
 const getAdminLink = (pollLink) => {

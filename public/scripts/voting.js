@@ -1,6 +1,8 @@
 const draggable_list = document.getElementById('draggable-list');
 const submit = document.getElementById('submit-poll-btn');
 
+console.log("POTATOOO??", JSON.stringify(window.potato));
+
 //hard-coding array in original order
 const myChoices = [
   //{id: 1, title: "apple", description: "keeps dr away"},
@@ -11,7 +13,6 @@ const myChoices = [
   [5, 'pomegrante', 'best fruit ever'],
   [6, 'strawberry', 'not really a berry apparently']
 ];
-
 
 const rankedChoices = [];
 
