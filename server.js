@@ -115,6 +115,13 @@ app.get("/results/:id", (req, res) => {
   getResultsFromAdminLink(adminLink)
   .then( response => {
     console.log("This should post the results ****", response);
+
+    const templateVars = {
+      response
+    }
+
+
+    res.render("poll_result", templateVars);
   });
 
 
@@ -122,7 +129,6 @@ app.get("/results/:id", (req, res) => {
 
 
 
-  res.render("poll_result");
 });
 
 //DATABASE SELECT FUNCTION (not done)

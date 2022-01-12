@@ -22,7 +22,15 @@
 <body>
   <%- include('partials/_header') %>
 
-  <h2>RESULTS PAGE</h2>
+  <h2> RESULTS PAGE </h2>
+
+  <% for (let item of response) { %>
+  <%= item.choice %>
+  <%= item.sum %>
+  <% } %>
+
+
+
 
 </body>
 </html>
