@@ -3,8 +3,17 @@ const submit = document.getElementById('submit-poll-btn');
 
 console.log("POTATOOO??", window.potato);
 
+const myChoices = [];
+
+window.potato.forEach( potato => {
+  const holder = [potato.id, potato.choice, potato.description];
+  myChoices.push(holder);
+})
+
+//console.log("new choices:", choices);
+
 //hard-coding array in original order
-const myChoices = [
+/* const myChoices = [
   //{id: 1, title: "apple", description: "keeps dr away"},
   [1, 'apple', 'keeps the doctor away'],
   [2, 'orange','lots of vitamin C'],
@@ -13,7 +22,7 @@ const myChoices = [
   [5, 'pomegrante', 'best fruit ever'],
   [6, 'strawberry', 'not really a berry apparently']
 ];
-
+ */
 const rankedChoices = [];
 
 //Store listitems
