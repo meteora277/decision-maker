@@ -23,14 +23,16 @@
   <%- include('partials/_header') %>
 
   <h2> RESULTS PAGE </h2>
+  <section id="results-list">
 
-  <% for (let item of response) { %>
-  <%= item.choice %>
-  <%= item.sum %>
-  <% } %>
+    <ul>
+      <% for (let item of response) { %>
+        <li class="result-item"><%= item.choice %> <%= item.sum %> </li>
+      <% } %>
 
+    </ul>
 
-
+  </section>
 
 </body>
 </html>
