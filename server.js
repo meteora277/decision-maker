@@ -80,7 +80,7 @@ app.get("/share/:id", (req, res) => {
   // templateVars for the poll
   let pollLink = req.params.id;
   getAdminLink(pollLink).then(poll => {
-    console.log("Testing poll:", poll);
+    //console.log("Testing poll:", poll);
     let adminLink = poll.admin_link
     let templateVars = {
       pollLink,
@@ -94,6 +94,19 @@ app.get("/results/:id", (req, res) => {
   res.render("poll_result");
 });
 
+//DATABASE SELECT FUNCTION (not done)
+/* const getChoiceId = (s) => {
+  return db
+    .query(`SELECT * FROM choices
+    WHERE poll_link = $1;`,
+    [pollLink])
+    .then((result) => result.rows[0])
+    .catch((err) => {
+      console.log(err.message);
+    });
+}; */
+
+//DATABASE SELECT FUNCTION
 const getAdminLink = (pollLink) => {
   return db
     .query(`SELECT * FROM polls
@@ -105,6 +118,7 @@ const getAdminLink = (pollLink) => {
     });
 };
 
+//DATABASE FUNCTION
 const createNewPoll = (poll) => {
   const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll;
   return db
@@ -118,6 +132,7 @@ const createNewPoll = (poll) => {
     });
 };
 
+//DATABASE FUNCTION
 const createNewChoice = (choice) => {
   const {poll_id, title, description} = choice;
   return db
@@ -150,10 +165,11 @@ app.post("/polls", (req, res) => {
   console.log("New Poll:", newPoll);
   createNewPoll(newPoll)
     .then((createdPoll) => {
-
+      console.log("For testing:", req.body);
       let keys = Object.keys(req.body);
       let filteredTitles = [];
 
+      //combine if statements into one (in forEach)
       keys.forEach(title => {
         if (/^title/.test(title)) {
           filteredTitles.push(title);
@@ -175,6 +191,7 @@ app.post("/polls", (req, res) => {
         };
         createNewChoice(newChoice);
       });
+
       console.log(createdPoll, 'hewwo');
       console.log(filteredDescriptions);
       console.log(filteredTitles);
@@ -184,26 +201,45 @@ app.post("/polls", (req, res) => {
 });
 
 
+//DATABASE FUNCTION: Insert into vote table
+const createNewVote = (newVote) => {
+  const {choice_id, vote_weight, name_id} = newVote;
+  return db
+    .query(`
+    INSERT INTO votes (choice_id, vote_weight, name_id)
+    VALUES ( $1, $2 , $3)
+    RETURNING *;
+    `,[choice_id, vote_weight, name_id])
+    .then((result) => console.log("new vote in database:", result.rows[0]))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
 app.post("/polls/:id", (req, res) => {
-  console.log("req.body:", req.body);
-  console.log("req.params:", req.params.id);
+  //console.log("req.body:", req.body);
+  //console.log("req.params:", req.params.id);
   res.status(200).send("ok");
 
   console.log("i want the array:", req.body.rankedChoices)
 
+  //Calculates vote weight of every choice from ranked list
   const calculateVoteWeight = (choice, rankedArray) => {
     const index = rankedArray.indexOf(choice);
     points = rankedArray.length - index;
     return points;
   }
 
-  req.body.rankedChoices.forEach( choice => {
+  //req.body.rankedChoices = [3,1,2]
+  req.body.rankedChoices.forEach( choiceID => {
     const newVote = {
-      choice_id: getChoiceId(choice),
-      vote_weight: calculateVoteWeight(choice, req.body.rankedChoices),
-      name_id,
+      choice_id: choiceID,
+      vote_weight: calculateVoteWeight(choiceID, req.body.rankedChoices),
+      name_id: 1,
     };
+    createNewVote(newVote);
   })
+
 });
 
 app.listen(PORT, () => {

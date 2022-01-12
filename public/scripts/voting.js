@@ -3,13 +3,15 @@ const submit = document.getElementById('submit-poll-btn');
 
 //hard-coding array in original order
 const myChoices = [
-  ['apple', 'keeps the doctor away'],
-  ['orange','lots of vitamin C'],
-  ['banana','lotsa potassium'],
-  ['watermelon', 'green on outside, red on inside'],
-  ['pomegrante', 'best fruit ever'],
-  ['strawberry', 'not really a berry apparently']
+  //{id: 1, title: "apple", description: "keeps dr away"},
+  [1, 'apple', 'keeps the doctor away'],
+  [2, 'orange','lots of vitamin C'],
+  [3, 'banana','lotsa potassium'],
+  [4, 'watermelon', 'green on outside, red on inside'],
+  [5, 'pomegrante', 'best fruit ever'],
+  [6, 'strawberry', 'not really a berry apparently']
 ];
+
 
 const rankedChoices = [];
 
@@ -48,7 +50,7 @@ function rankedOrder() {
   console.log("array of ranked choices:", rankedChoices);
   rankedChoices.forEach(choice => {console.log(choice)})
 
-  //submitPollForm()
+  //Using AJAX to POST rankedChoices array to server
   console.log("rankedChoices", {rankedChoices});
   $.post(`/polls/${window.poll_id}` , {rankedChoices}, function(data){
     console.log("Data:", data);
