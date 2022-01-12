@@ -1,7 +1,7 @@
 const draggable_list = document.getElementById('draggable-list');
 const submit = document.getElementById('submit-poll-btn');
 
-console.log("POTATOOO??", JSON.stringify(window.potato));
+console.log("POTATOOO??", window.potato);
 
 //hard-coding array in original order
 const myChoices = [

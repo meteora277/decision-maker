@@ -14,11 +14,11 @@
   <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet">
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script>
-    window.potato = `<%= potato  %>`
-    </script>
+    window.potato = <%- JSON.stringify(potato) %>
+  </script>
   <script>
     window.poll_id = `<%= poll_id  %>`
-    </script>
+  </script>
   <script type="text/javascript" src="/scripts/voting.js" defer></script>
 
   <!--Font Awesome Library-->
