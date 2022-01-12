@@ -91,8 +91,6 @@ const getPollIdFromPollLink = async(link) => {
     .then(res => res.rows[0])
     .catch(err => console.log(err));
 };
-getPollIdFromPollLink('j57cxd')
-  .then(res => console.log(res, 'owo'));
 
 
 app.get("/share/:id", (req, res) => {
@@ -111,6 +109,19 @@ app.get("/share/:id", (req, res) => {
 });
 
 app.get("/results/:id", (req, res) => {
+  let adminLink = req.params.id;
+  console.log("This should be the admin link:", req.params.id )
+
+  getResultsFromAdminLink(adminLink)
+  .then( response => {
+    console.log("This should post the results ****", response);
+  });
+
+
+
+
+
+
   res.render("poll_result");
 });
 
@@ -126,7 +137,24 @@ app.get("/results/:id", (req, res) => {
     });
 }; */
 
-//DATABSE SELECTION FUNCTION (choice and description)
+//DELETE? DATABSE SELECTION FUNCTION using admin link (choice and description)
+const getResultsFromAdminLink = async (pollId) => {
+
+  return db.query(`
+    SELECT title AS choice, sum(votes.vote_weight)
+    FROM votes JOIN choices ON choice_id = choices.id JOIN polls ON poll_id = polls.id
+    WHERE admin_link = $1
+    GROUP BY choices.title, polls.id
+    ORDER BY sum(votes.vote_weight) DESC;
+  `, [pollId])
+    .then(res => res.rows)
+    .catch(err => console.log(err));
+
+};
+
+
+
+//DATABSE SELECTION FUNCTION using poll link (choice and description)
 const getChoicesFromPollLink = async (pollId) => {
   return db.query(`
     SELECT choices.id, title AS choice, choices.description
@@ -196,7 +224,7 @@ app.post("/polls", (req, res) => {
     is_active: true
   };
 
-  console.log("New Poll:", newPoll);
+  //console.log("New Poll:", newPoll);
   createNewPoll(newPoll)
     .then((createdPoll) => {
       console.log("For testing:", req.body);
@@ -230,8 +258,8 @@ app.post("/polls", (req, res) => {
       console.log(filteredDescriptions);
       console.log(filteredTitles);
 
+      res.redirect(`/share/${pollLink}`);
     });
-  res.redirect(`/share/${pollLink}`);
 });
 
 
@@ -255,7 +283,7 @@ app.post("/polls/:id", (req, res) => {
   //console.log("req.params:", req.params.id);
   res.status(200).send("ok");
 
-  console.log("i want the array:", req.body.rankedChoices)
+  //console.log("i want the array:", req.body.rankedChoices)
 
   //Calculates vote weight of every choice from ranked list
   const calculateVoteWeight = (choice, rankedArray) => {
