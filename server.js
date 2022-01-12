@@ -16,7 +16,7 @@ const db = new Pool(dbParams);
 db.connect();
 
 //mailgun API import
-const mailgunAPI = require("./mailgun.js")
+const mailgunPollEmail = require("./mailgun.js")
 
 
 const generateRandomString = function(length = 6) {
@@ -127,12 +127,6 @@ app.get("/results/:id", (req, res) => {
 
     res.render("poll_result", templateVars);
   });
-
-
-
-
-
-
 });
 
 //DATABASE SELECT FUNCTION (not done)
@@ -161,7 +155,6 @@ const getResultsFromAdminLink = async (pollId) => {
     .catch(err => console.log(err));
 
 };
-
 
 
 //DATABSE SELECTION FUNCTION using poll link (choice and description)
@@ -225,7 +218,7 @@ app.post("/polls", (req, res) => {
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
 
-  mailgunAPI(req.body.email, pollLink, adminLink);
+  mailgunPollEmail(req.body.email, pollLink, adminLink);
 
   const newPoll = {
     email_address: req.body.email,
