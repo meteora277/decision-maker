@@ -40,8 +40,8 @@ function createList() {
       listItem.innerHTML = `
       <span class="number">${index + 1}</span>
       <div class="draggable" draggable="true" data-choice="${choice[0]}">
-        <h4 class="choice-name">${choice[0]}</h4>
-        <p class="description-name">${choice[1]}</p>
+        <h4 class="choice-name">${choice[1]}</h4>
+        <p class="description-name">${choice[2]}</p>
         <i class = "fas fa-grip-lines"></i>
       </div>
       `;
