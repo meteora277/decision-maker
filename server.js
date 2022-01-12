@@ -15,6 +15,10 @@ const dbParams = require("./lib/db.js");
 const db = new Pool(dbParams);
 db.connect();
 
+//mailgun API import
+const mailgunAPI = require("./mailgun.js")
+
+
 const generateRandomString = function(length = 6) {
   let result  = '';
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -63,10 +67,10 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-//Not using?
+/* //Not using?
 app.get("/polls/new", (req, res) => {
   res.render("poll_form");
-});
+}); */
 
 app.get("/polls/:id", (req, res) => {
 
@@ -220,6 +224,8 @@ app.post("/polls", (req, res) => {
 
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
+
+  mailgunAPI(req.body.email, pollLink, adminLink);
 
   const newPoll = {
     email_address: req.body.email,
