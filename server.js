@@ -83,6 +83,18 @@ app.get("/polls/:id", (req, res) => {
 
 });
 
+const getPollIdFromPollLink = async(link) => {
+  return db.query(`
+    SELECT * FROM polls
+    WHERE poll_link = $1;
+  `, [link])
+    .then(res => res.rows[0])
+    .catch(err => console.log(err));
+};
+getPollIdFromPollLink('j57cxd')
+  .then(res => console.log(res, 'owo'));
+
+
 app.get("/share/:id", (req, res) => {
   // write the select queries after getting the id from the parents.
   // templateVars for the poll
