@@ -70,7 +70,7 @@ app.get("/polls/new", (req, res) => {
 
 app.get("/polls/:id", (req, res) => {
 
-  getChoicesFromPollId(req.params.id)
+  getChoicesFromPollLink(req.params.id)
   .then((response) => {
     console.log("RESPONSE**:", response);
 
@@ -127,17 +127,17 @@ app.get("/results/:id", (req, res) => {
 }; */
 
 //DATABSE SELECTION FUNCTION (choice and description)
-const getChoicesFromPollId = async (pollId) => {
+const getChoicesFromPollLink = async (pollId) => {
   return db.query(`
     SELECT choices.id, title AS choice, choices.description
     FROM choices JOIN polls ON poll_id = polls.id
-    WHERE polls.id = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
+    WHERE poll_link = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
   `, [pollId])
     .then(res => res.rows)
     .catch(err => console.log(err));
 };
 
-getChoicesFromPollId(1)
+getChoicesFromPollLink(1)
 .then((res) => console.log(res));
 
 //DATABASE SELECT FUNCTION
