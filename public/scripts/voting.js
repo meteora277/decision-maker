@@ -1,16 +1,28 @@
 const draggable_list = document.getElementById('draggable-list');
 const submit = document.getElementById('submit-poll-btn');
 
-//hard-coding array in original order
-const myChoices = [
-  ['apple', 'keeps the doctor away'],
-  ['orange','lots of vitamin C'],
-  ['banana','lotsa potassium'],
-  ['watermelon', 'green on outside, red on inside'],
-  ['pomegrante', 'best fruit ever'],
-  ['strawberry', 'not really a berry apparently']
-];
+console.log("POTATOOO??", window.potato);
 
+const myChoices = [];
+
+window.potato.forEach( potato => {
+  const holder = [potato.id, potato.choice, potato.description];
+  myChoices.push(holder);
+})
+
+//console.log("new choices:", choices);
+
+//hard-coding array in original order
+/* const myChoices = [
+  //{id: 1, title: "apple", description: "keeps dr away"},
+  [1, 'apple', 'keeps the doctor away'],
+  [2, 'orange','lots of vitamin C'],
+  [3, 'banana','lotsa potassium'],
+  [4, 'watermelon', 'green on outside, red on inside'],
+  [5, 'pomegrante', 'best fruit ever'],
+  [6, 'strawberry', 'not really a berry apparently']
+];
+ */
 const rankedChoices = [];
 
 //Store listitems
@@ -27,9 +39,9 @@ function createList() {
       listItem.setAttribute('data-index', index);
       listItem.innerHTML = `
       <span class="number">${index + 1}</span>
-      <div class="draggable" draggable="true">
-        <h4 class="choice-name">${choice[0]}</h4>
-        <p class="description-name">${choice[1]}</p>
+      <div class="draggable" draggable="true" data-choice="${choice[0]}">
+        <h4 class="choice-name">${choice[1]}</h4>
+        <p class="description-name">${choice[2]}</p>
         <i class = "fas fa-grip-lines"></i>
       </div>
       `;
@@ -42,32 +54,18 @@ function createList() {
 //Save the order items were ranked in an array
 function rankedOrder() {
   listItems.forEach((listItem) => {
-    const choiceName= listItem.querySelector('.draggable').innerText.trim();
+    const choiceName= listItem.querySelector('.draggable').getAttribute("data-choice").trim();
     rankedChoices.push(choiceName);
   })
+  console.log("array of ranked choices:", rankedChoices);
   rankedChoices.forEach(choice => {console.log(choice)})
-  submitPollForm()
-  return rankedChoices;
+
+  //Using AJAX to POST rankedChoices array to server
+  console.log("rankedChoices", {rankedChoices});
+  $.post(`/polls/${window.poll_id}` , {rankedChoices}, function(data){
+    console.log("Data:", data);
+  })
 }
-
-/* function submitPollForm() {
-  const vote = document.querySelector('.hidden-form');
-
-  vote.innerHTML = `
-    <form id="myForm" name="myVote" method="POST" action="/polls/1">
-    <input class="form-control" name="email">
-
-    <div class="d-flex justify-content-center">
-    <button type="submit" class="btn btn-primary btn-lg">submit</button>
-    </div>
-    </form>
-    `
-
-  document.getElementById("myForm").submit();
-  console.log("content of hidden-form test:", vote.innerHTML);
-
-
-} */
 
 function dragStart() {
   //Look at DOM, find closest li, and get the atrribute of data-index
@@ -130,4 +128,7 @@ function addEventListeners() {
   })
 }
 
-submit.addEventListener('click', rankedOrder);
+submit.addEventListener('click', () => {
+  rankedOrder();
+  document.getElementsByClassName("choices-list")[0].innerHTML = "<h1> Thank you for voting! </h1>";
+});

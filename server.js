@@ -63,35 +63,98 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+//Not using?
 app.get("/polls/new", (req, res) => {
   res.render("poll_form");
 });
 
 app.get("/polls/:id", (req, res) => {
-  res.render("show_poll");
+
+  getChoicesFromPollLink(req.params.id)
+  .then((response) => {
+    console.log("RESPONSE**:", response);
+
+    const templateVars = {
+      potato: response,
+      poll_id: req.params.id,
+    }
+    res.render("show_poll", templateVars);
+  })
+
 });
+
+const getPollIdFromPollLink = async(link) => {
+  return db.query(`
+    SELECT * FROM polls
+    WHERE poll_link = $1;
+  `, [link])
+    .then(res => res.rows[0])
+    .catch(err => console.log(err));
+};
+getPollIdFromPollLink('j57cxd')
+  .then(res => console.log(res, 'owo'));
+
 
 app.get("/share/:id", (req, res) => {
   // write the select queries after getting the id from the parents.
   // templateVars for the poll
-  res.render("links_share");
-
+  let pollLink = req.params.id;
+  getAdminLink(pollLink).then(poll => {
+    //console.log("Testing poll:", poll);
+    let adminLink = poll.admin_link
+    let templateVars = {
+      pollLink,
+      adminLink,
+    }
+    res.render("links_share", templateVars);
+  })
 });
 
 app.get("/results/:id", (req, res) => {
   res.render("poll_result");
 });
 
-// create body of the request with data from form.
-// Work on auto gen values
-// create poll attributes object (sep function two links)
-//set result to poll_link
-// if same func is used call it twice for admin link
-// get annonymous param from body
+//DATABASE SELECT FUNCTION (not done)
+/* const getChoiceId = (s) => {
+  return db
+    .query(`SELECT * FROM choices
+    WHERE poll_link = $1;`,
+    [pollLink])
+    .then((result) => result.rows[0])
+    .catch((err) => {
+      console.log(err.message);
+    });
+}; */
 
+//DATABSE SELECTION FUNCTION (choice and description)
+const getChoicesFromPollLink = async (pollId) => {
+  return db.query(`
+    SELECT choices.id, title AS choice, choices.description
+    FROM choices JOIN polls ON poll_id = polls.id
+    WHERE poll_link = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
+  `, [pollId])
+    .then(res => res.rows)
+    .catch(err => console.log(err));
+};
 
+getChoicesFromPollLink(1)
+.then((res) => console.log(res));
+
+//DATABASE SELECT FUNCTION
+const getAdminLink = (pollLink) => {
+  return db
+    .query(`SELECT * FROM polls
+    WHERE poll_link = $1;`,
+    [pollLink])
+    .then((result) => result.rows[0])
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+//DATABASE FUNCTION
 const createNewPoll = (poll) => {
-  const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll
+  const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll;
   return db
     .query(`INSERT INTO polls (email_address, question, admin_link, poll_link, is_active, anonymous)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -99,27 +162,27 @@ const createNewPoll = (poll) => {
     [email_address, question, admin_link, poll_link, is_active, anonymous])
     .then((result) => result.rows[0])
     .catch((err) => {
-      console.log(err.message)
+      console.log(err.message);
     });
 };
 
+//DATABASE FUNCTION
 const createNewChoice = (choice) => {
   const {poll_id, title, description} = choice;
   return db
-  .query()
+    .query(`
+    INSERT INTO choices (poll_id, title, description)
+    VALUES ( $1, $2 , $3)
+    RETURNING *;
+    `,[poll_id, title, description])
+    .then((result) => result.rows[0])
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
 
-}
 
 app.post("/polls", (req, res) => {
-  // gen random link
-/*   console.log(Object.keys(req.body));
-  console.log("email:", req.body.email, "title:", req.body.title0, "description:", req.body.description0) */
-
-  // const keyArray = Object.keys(req.body)
-
-  // keyArray.forEach( key => {
-  //   req.body[key] =>
-  // })
 
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
@@ -131,21 +194,86 @@ app.post("/polls", (req, res) => {
     admin_link: adminLink,
     poll_link: pollLink,
     is_active: true
-  }
+  };
+
   console.log("New Poll:", newPoll);
-  createNewPoll(newPoll);
+  createNewPoll(newPoll)
+    .then((createdPoll) => {
+      console.log("For testing:", req.body);
+      let keys = Object.keys(req.body);
+      let filteredTitles = [];
 
-/*   // db query - INSERT INTO polls
-  const poll = {email_address, question, anonymous} //get this from body
-  createNewPoll(poll)
+      //combine if statements into one (in forEach)
+      keys.forEach(title => {
+        if (/^title/.test(title)) {
+          filteredTitles.push(title);
+        }
+      });
+      let filteredDescriptions = [];
 
+      keys.forEach(description => {
+        if (/^description/.test(description)) {
+          filteredDescriptions.push(description);
+        }
+      });
+      filteredTitles.forEach((title, index) => {
 
+        let newChoice = {
+          poll_id: createdPoll.id,
+          title: req.body[title],
+          description: req.body[filteredDescriptions[index]]
+        };
+        createNewChoice(newChoice);
+      });
 
-  //res.redirect --> /share/:id right after inserting. async await
-  res.redirect('/share/:id') */
+      console.log(createdPoll, 'hewwo');
+      console.log(filteredDescriptions);
+      console.log(filteredTitles);
+
+    });
+  res.redirect(`/share/${pollLink}`);
 });
 
+
+//DATABASE FUNCTION: Insert into vote table
+const createNewVote = (newVote) => {
+  const {choice_id, vote_weight, name_id} = newVote;
+  return db
+    .query(`
+    INSERT INTO votes (choice_id, vote_weight, name_id)
+    VALUES ( $1, $2 , $3)
+    RETURNING *;
+    `,[choice_id, vote_weight, name_id])
+    .then((result) => console.log("new vote in database:", result.rows[0]))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
 app.post("/polls/:id", (req, res) => {
+  //console.log("req.body:", req.body);
+  //console.log("req.params:", req.params.id);
+  res.status(200).send("ok");
+
+  console.log("i want the array:", req.body.rankedChoices)
+
+  //Calculates vote weight of every choice from ranked list
+  const calculateVoteWeight = (choice, rankedArray) => {
+    const index = rankedArray.indexOf(choice);
+    points = rankedArray.length - index;
+    return points;
+  }
+
+  //req.body.rankedChoices = [3,1,2]
+  req.body.rankedChoices.forEach( choiceID => {
+    const newVote = {
+      choice_id: choiceID,
+      vote_weight: calculateVoteWeight(choiceID, req.body.rankedChoices),
+      name_id: 1,
+    };
+    createNewVote(newVote);
+  })
+
 });
 
 app.listen(PORT, () => {
