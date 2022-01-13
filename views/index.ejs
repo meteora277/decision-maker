@@ -3,7 +3,6 @@
 
 <head>
   <title>Decision Maker</title>
-
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
   <link rel="stylesheet" href="/styles/main.css" type="text/css" />
@@ -13,18 +12,20 @@
   <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet">
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="/scripts/app.js"></script>
+  <link rel="stylesheet" href="/styles/index.css">
 </head>
 
 <body>
   <%- include('partials/_header') %>
     </div>
-    <section>
+    <section class="poll-form">
       <form action="/polls" method="POST">
+        <div class="toggle-bg">
           <div id="email-form">
-            <label for='enter-email'>Email</label>
             <input type="email" class="form-control" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
             <button id="email-button"class="subButton btn btn-primary" type="submit">Create Poll</button>
           </div>
+        </div>
 
           <div class="poll-question form-control">
             <textarea class="form-control" name="question" placeholder="Burning questions that need answering"></textarea>
