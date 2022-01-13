@@ -1,14 +1,13 @@
 
 .poll-form {
-  margin: 5rem 10%;
+  margin: 3rem 10%;
 
   form input, button{
     margin-bottom: 0.8rem;
   }
   .poll-question {
-    margin-bottom: 0.8rem;
+    margin-bottom: 2rem;
   }
-
   .create-poll-btn, .add-option-btn{
     margin-bottom: 0;
   }
@@ -29,6 +28,9 @@
     margin-bottom: 0.8rem;
   }
 }
+.option-container {
+  margin-bottom: 1.5rem;
+}
 .toggle-bg {
   background: rgba(0, 0, 0, 0.6);
   position: absolute;
@@ -41,3 +43,9 @@
 
 }
 
+@media (min-width: 1080px) {
+  .poll-form, #email-form {
+    margin: 3rem 20%;
+  }
+
+}
