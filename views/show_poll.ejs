@@ -29,11 +29,13 @@
 <body>
   <%- include('partials/_header') %>
 
-
-
   <section class=choices-list>
     <h2>Voting Page</h2>
     <h3><%= potato[0].question %> </h3>
+    <% if (!potato[0].anonymous) { %>
+    <label for="name">Name</label>
+    <input id="name" type="text" placeholder="Please enter your name">
+    <% } %>
     <p>Please drag and drop the items to rank your choices.</p>
     <ul class= "draggable-list" id="draggable-list"></ul>
     <button class="submit-poll-btn" id="submit-poll-btn">

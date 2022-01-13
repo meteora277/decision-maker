@@ -31,7 +31,16 @@
       <% } %>
 
     </ul>
-
+    <br>
+      <h2>People that have voted so far</h2>
+    <ul>
+      <%  %>
+    </ul>
+    <% for( let i = 0; i < names.length; i++) { %>
+    <li>
+      <%- names[i].name %>
+    </li>
+    <% } %>
   </section>
 
 </body>

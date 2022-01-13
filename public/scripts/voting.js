@@ -62,7 +62,7 @@ function rankedOrder() {
 
   //Using AJAX to POST rankedChoices array to server
   console.log("rankedChoices", {rankedChoices});
-  $.post(`/polls/${window.poll_id}` , {rankedChoices}, function(data){
+  $.post(`/polls/${window.poll_id}` , {rankedChoices, name: $('#name').val()}, function(data){
     console.log("Data:", data);
   })
 }
