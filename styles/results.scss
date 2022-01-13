@@ -9,6 +9,14 @@
   box-sizing: border-box;
 }
 
+.choices-list h3 {
+  padding: 0.75em;
+}
+
+.nameline {
+  padding-bottom: 20px;
+}
+
 .choices-list {
   background-color: #fff;
   display: flex;
@@ -91,4 +99,8 @@
 
 .fa-solid, .fas {
   padding: 0 20px 0 30px;
+}
+
+.fa-angle-double-down {
+  padding: 0 0 0 5px;
 }
