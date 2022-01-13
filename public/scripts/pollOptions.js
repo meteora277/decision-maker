@@ -47,6 +47,7 @@ $(document).ready(() => {
         );
     } else if (validEmail) {
       $(this).parent().hide();
+      $(this).parent().parent().hide();
     }
   });
 
