@@ -73,15 +73,15 @@ app.get("/polls/new", (req, res) => {
 
 app.get("/polls/:id", (req, res) => {
   getChoicesFromPollLink(req.params.id)
-  .then((response) => {
-    console.log("RESPONSE**:", response);
+    .then((response) => {
+      console.log("RESPONSE**:", response);
 
-    const templateVars = {
-      potato: response,
-      poll_id: req.params.id
-    }
-    res.render("show_poll", templateVars);
-  })
+      const templateVars = {
+        potato: response,
+        poll_id: req.params.id
+      };
+      res.render("show_poll", templateVars);
+    });
 });
 
 const getPollIdFromPollLink = async(link) => {
@@ -100,26 +100,26 @@ app.get("/share/:id", (req, res) => {
   let pollLink = req.params.id;
   getAdminLink(pollLink).then(poll => {
     //console.log("Testing poll:", poll);
-    let adminLink = poll.admin_link
+    let adminLink = poll.admin_link;
     let templateVars = {
       pollLink,
       adminLink,
-    }
+    };
     res.render("links_share", templateVars);
-  })
+  });
 });
 
 app.get("/results/:id", (req, res) => {
   let adminLink = req.params.id;
-  console.log("This should be the admin link:", req.params.id )
+  console.log("This should be the admin link:", req.params.id);
 
   getResultsFromAdminLink(adminLink)
     .then( response => {
       console.log("This should post the results ****", response);
       const templateVars = {
         response
-      }
-      return templateVars
+      };
+      return templateVars;
     })
     .then(templateVars => {
       db.query(`
@@ -128,28 +128,16 @@ app.get("/results/:id", (req, res) => {
       JOIN polls ON poll_id = polls.id WHERE polls.admin_link = $1;
       `,[adminLink])
         .then(res => {
-          console.log(res.rows)
+          console.log(res.rows);
           return res.rows;
         })
         .then((rows) => {
           templateVars.names = rows;
-          res.render("poll_result", templateVars)
+          res.render("poll_result", templateVars);
         }
         );
     });
 });
-
-//DATABASE SELECT FUNCTION (not done)
-/* const getChoiceId = (s) => {
-  return db
-    .query(`SELECT * FROM choices
-    WHERE poll_link = $1;`,
-    [pollLink])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message);
-    });
-}; */
 
 //DELETE? DATABSE SELECTION FUNCTION using admin link (choice and description)
 const getResultsFromAdminLink = async (pollId) => {
@@ -180,7 +168,6 @@ const getLinksFromChoiceID = async (choiceID) => {
     .then(res => res.rows)
     .catch(err => console.log(err));
 };
-
 
 //DATABSE SELECTION FUNCTION using poll link (choice and description)
 const getChoicesFromPollLink = async (pollId) => {
@@ -242,7 +229,7 @@ app.post("/polls", (req, res) => {
 
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
-  console.log(req.body.anonymous, "humhumuh")
+  console.log(req.body.anonymous, "humhumuh");
   let anonymous = false;
   if (req.body.anonymous === 'on') {
     anonymous = true;
@@ -321,18 +308,18 @@ app.post("/polls/:id", (req, res) => {
   const firstChoiceID = req.body.rankedChoices[0];
   //Get email, poll and admin links using first votes choiceID
   getLinksFromChoiceID(firstChoiceID)
-  .then((result) => {
-    console.log("adminLink", result[0].admin_link, "pollLink", result[0].poll_link, "email_address", result[0].email_address );
-    console.log("DOES THIS HAVE EMAILS AND LINKS", result[0])
+    .then((result) => {
+      console.log("adminLink", result[0].admin_link, "pollLink", result[0].poll_link, "email_address", result[0].email_address);
+      console.log("DOES THIS HAVE EMAILS AND LINKS", result[0]);
 
-    const adminLink = result[0].admin_link;
-    const pollLink = result[0].poll_link;
-    const email_address = result[0].email_address;
+      const adminLink = result[0].admin_link;
+      const pollLink = result[0].poll_link;
+      const email_address = result[0].email_address;
 
-    mailgunVoteNotification(email_address, pollLink, adminLink);
-    //mailgunVoteNotification("bita.janzadeh@hotmail.com", "22", '');
+      mailgunVoteNotification(email_address, pollLink, adminLink);
+      //mailgunVoteNotification("bita.janzadeh@hotmail.com", "22", '');
 
-  })
+    });
 
 
 
@@ -349,7 +336,7 @@ app.post("/polls/:id", (req, res) => {
         const index = rankedArray.indexOf(choice);
         points = rankedArray.length - index;
         return points;
-      }
+      };
 
       //req.body.rankedChoices = [3,1,2]
       req.body.rankedChoices.forEach(choiceID => {
