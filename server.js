@@ -65,10 +65,6 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-/* //Not using?
-app.get("/polls/new", (req, res) => {
-  res.render("poll_form");
-}); */
 
 app.get("/polls/:id", (req, res) => {
   getChoicesFromPollLink(req.params.id)
