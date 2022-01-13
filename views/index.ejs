@@ -20,10 +20,11 @@
     </div>
     <section>
       <form action="/polls" method="POST">
-          <label for='enter-email'>Email</label>
-          <input type="email" class="form-control" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
-
-          <button id="email-button"class="subButton btn btn-primary" type="submit">Create Poll</button>
+          <div id="email-form">
+            <label for='enter-email'>Email</label>
+            <input type="email" class="form-control" name="email" placeholder="Enter email adress" id='enter-email'></textarea>
+            <button id="email-button"class="subButton btn btn-primary" type="submit">Create Poll</button>
+          </div>
 
           <div class="poll-question form-control">
             <textarea class="form-control" name="question" placeholder="Burning questions that need answering"></textarea>
@@ -62,9 +63,26 @@
           insertOption(optionsCount);
           optionsCount +=1;
         }
-        $("#email-button").on('click', () => {
+        $("#email-button").on('click', function() {
           event.preventDefault();
+
+          //grabs email input field and appends a
+          $(this).parents().children('.alert').remove();
+
+          let emailInput = $(this).parent().children('input')
+          const validEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailInput.val())
+
+          if(!emailInput.val()) {
+            $(this).parent().children('input').after('<div class="alert alert-danger">Email address is required</div>')
+          } else if (!validEmail) {
+
+            $(this).parent().children('input').after('<div class="alert alert-danger">Not a Valid Email Address</div>')
+          } else if (validEmail) {
+            $(this).parent().hide();
+          }
+
         })
+
         $('#new-option').on('click', (event) => {
           event.preventDefault();
           insertOption(optionsCount);
@@ -73,6 +91,8 @@
 
         $('#options-container').on('click', ".option-container button", function(event) {
           event.preventDefault();
+          // if valid email address the email form will be hidden
+          //we can also add a class here to hdie it with css
           $(this).parent().remove();
         });
 
