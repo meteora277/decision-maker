@@ -86,6 +86,22 @@ const createNewChoice = async(choice) => {
     });
 };
 
+//DATABASE FUNCTION: Insert into vote table
+const createNewVote = async(newVote) => {
+  const {choice_id, vote_weight, name_id} = newVote;
+  return db
+    .query(`
+    INSERT INTO votes (choice_id, vote_weight, name_id)
+    VALUES ( $1, $2 , $3)
+    RETURNING *;
+    `,[choice_id, vote_weight, name_id])
+    .then((result) => console.log("new vote in database:", result.rows[0]))
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+
 module.exports = {
   getResultsFromAdminLink,
   getLinksFromChoiceID,
@@ -93,4 +109,5 @@ module.exports = {
   getAdminLink,
   createNewPoll,
   createNewChoice,
+  createNewVote
 };
