@@ -22,7 +22,7 @@ CREATE TABLE choices(
 );
 CREATE TABLE names(
   id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
+  name VARCHAR(255)
 );
 
 CREATE TABLE votes(
