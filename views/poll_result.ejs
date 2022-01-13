@@ -28,10 +28,20 @@
     <div id="results-list">
 
       <div class="response-results">
+
         <ul>
+          <li class="result-title">
+            <div class="result-label">
+              Choice
+            </div>
+            <div class ="sum-title"> Points  </div>
+          </li>
+
+
           <% for (let item of response) { %>
             <li class="result-item"><%= item.choice %>
-              <div class ="sum"> <%= item.sum %>  </div> </li>
+              <div class ="sum"> <%= item.sum %>  </div>
+            </li>
             <% } %>
 
           </ul>
