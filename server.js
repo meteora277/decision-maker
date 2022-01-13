@@ -18,6 +18,15 @@ db.connect();
 //mailgun API import
 const {mailgunPollEmail, mailgunVoteNotification} = require("./mailgun.js");
 
+const {
+  getResultsFromAdminLink,
+  getLinksFromChoiceID,
+  getChoicesFromPollLink,
+  getAdminLink,
+  createNewPoll,
+  createNewChoice,
+} = require('./db/queries/dbFunctions');
+
 const generateRandomString = function(length = 6) {
   let result  = '';
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -84,16 +93,6 @@ app.get("/polls/:id", (req, res) => {
     });
 });
 
-const getPollIdFromPollLink = async(link) => {
-  return db.query(`
-    SELECT * FROM polls
-    WHERE poll_link = $1;
-  `, [link])
-    .then(res => res.rows[0])
-    .catch(err => console.log(err));
-};
-
-
 app.get("/share/:id", (req, res) => {
   // write the select queries after getting the id from the parents.
   // templateVars for the poll
@@ -138,92 +137,6 @@ app.get("/results/:id", (req, res) => {
         );
     });
 });
-
-//DELETE? DATABSE SELECTION FUNCTION using admin link (choice and description)
-const getResultsFromAdminLink = async (pollId) => {
-
-  return db.query(`
-    SELECT title AS choice, sum(votes.vote_weight)
-    FROM votes JOIN choices ON choice_id = choices.id
-    JOIN polls ON poll_id = polls.id
-    WHERE admin_link = $1
-    GROUP BY choices.title, polls.id
-    ORDER BY sum(votes.vote_weight) DESC;
-  `, [pollId])
-    .then(res => res.rows)
-    .catch(err => console.log(err));
-
-};
-
-//HELPER FUNCTION to send notification email
-const getLinksFromChoiceID = async (choiceID) => {
-
-  return db.query(`
-    SELECT admin_link, poll_link, email_address
-    FROM choices
-    JOIN polls ON poll_id = polls.id
-    WHERE choices.id = $1
-    LIMIT 1
-  `, [choiceID])
-    .then(res => res.rows)
-    .catch(err => console.log(err));
-};
-
-//DATABSE SELECTION FUNCTION using poll link (choice and description)
-const getChoicesFromPollLink = async (pollId) => {
-  return db.query(`
-    SELECT choices.id, title AS choice, choices.description, polls.question, anonymous
-    FROM choices JOIN polls ON poll_id = polls.id
-    WHERE poll_link = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
-  `, [pollId])
-    .then(res => res.rows)
-    .catch(err => console.log(err));
-};
-
-getChoicesFromPollLink(1)
-.then((res) => console.log(res));
-
-//DATABASE SELECT FUNCTION
-const getAdminLink = (pollLink) => {
-  return db
-    .query(`SELECT * FROM polls
-    WHERE poll_link = $1;`,
-    [pollLink])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-//DATABASE FUNCTION
-const createNewPoll = (poll) => {
-  const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll;
-  return db
-    .query(`INSERT INTO polls (email_address, question, admin_link, poll_link, is_active, anonymous)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING *; `,
-    [email_address, question, admin_link, poll_link, is_active, anonymous])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message, '203');
-    });
-};
-
-//DATABASE FUNCTION
-const createNewChoice = (choice) => {
-  const {poll_id, title, description} = choice;
-  return db
-    .query(`
-    INSERT INTO choices (poll_id, title, description)
-    VALUES ( $1, $2 , $3)
-    RETURNING *;
-    `,[poll_id, title, description])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
 
 app.post("/polls", (req, res) => {
 
@@ -286,7 +199,7 @@ app.post("/polls", (req, res) => {
 
 
 //DATABASE FUNCTION: Insert into vote table
-const createNewVote = (newVote) => {
+const createNewVote = async(newVote) => {
   const {choice_id, vote_weight, name_id} = newVote;
   return db
     .query(`
@@ -334,7 +247,7 @@ app.post("/polls/:id", (req, res) => {
       //Calculates vote weight of every choice from ranked list
       const calculateVoteWeight = (choice, rankedArray) => {
         const index = rankedArray.indexOf(choice);
-        points = rankedArray.length - index;
+        let points = rankedArray.length - index;
         return points;
       };
 
