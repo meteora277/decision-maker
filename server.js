@@ -48,30 +48,15 @@ app.use(
 app.use(express.static("public"));
 
 const pollsRoutes = require("./routes/polls");
+const shareRoutes = require("./routes/shareRoutes");
 
 app.use("/polls/:id", pollsRoutes);
-
+app.use("/share/:id", shareRoutes);
 // Home page
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
 app.get("/", (req, res) => {
   res.render("index");
-});
-
-
-app.get("/share/:id", (req, res) => {
-  // write the select queries after getting the id from the parents.
-  // templateVars for the poll
-  let pollLink = req.params.id;
-  getAdminLink(pollLink).then(poll => {
-    //console.log("Testing poll:", poll);
-    let adminLink = poll.admin_link;
-    let templateVars = {
-      pollLink,
-      adminLink,
-    };
-    res.render("links_share", templateVars);
-  });
 });
 
 app.get("/results/:id", (req, res) => {
