@@ -80,7 +80,7 @@ app.get("/polls/:id", (req, res) => {
 
     const templateVars = {
       potato: response,
-      poll_id: req.params.id,
+      poll_id: req.params.id
     }
     res.render("show_poll", templateVars);
   })
@@ -117,21 +117,30 @@ app.get("/results/:id", (req, res) => {
   console.log("This should be the admin link:", req.params.id )
 
   getResultsFromAdminLink(adminLink)
-  .then( response => {
-    console.log("This should post the results ****", response);
+    .then( response => {
+      console.log("This should post the results ****", response);
+      const templateVars = {
+        response
+      }
+      return templateVars
+    })
+    .then(templateVars => {
+      db.query(`
+      SELECT DISTINCT names.* FROM names JOIN votes ON name_id = names.id
+      JOIN choices ON choice_id = choices.id
+      JOIN polls ON poll_id = polls.id WHERE polls.admin_link = $1;
+      `,[adminLink])
+        .then(res => {
+          console.log(res.rows)
+          return res.rows;
+        })
+        .then((rows) => {
+          templateVars.names = rows;
+          res.render("poll_result", templateVars)
+        }
+        );
 
-    const templateVars = {
-      response
-    }
-
-
-    res.render("poll_result", templateVars);
-  });
-
-
-
-
-
+    });
 
 });
 
@@ -152,7 +161,8 @@ const getResultsFromAdminLink = async (pollId) => {
 
   return db.query(`
     SELECT title AS choice, sum(votes.vote_weight)
-    FROM votes JOIN choices ON choice_id = choices.id JOIN polls ON poll_id = polls.id
+    FROM votes JOIN choices ON choice_id = choices.id
+    JOIN polls ON poll_id = polls.id
     WHERE admin_link = $1
     GROUP BY choices.title, polls.id
     ORDER BY sum(votes.vote_weight) DESC;
@@ -167,7 +177,7 @@ const getResultsFromAdminLink = async (pollId) => {
 //DATABSE SELECTION FUNCTION using poll link (choice and description)
 const getChoicesFromPollLink = async (pollId) => {
   return db.query(`
-    SELECT choices.id, title AS choice, choices.description, polls.question
+    SELECT choices.id, title AS choice, choices.description, polls.question, anonymous
     FROM choices JOIN polls ON poll_id = polls.id
     WHERE poll_link = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
   `, [pollId])
@@ -200,7 +210,7 @@ const createNewPoll = (poll) => {
     [email_address, question, admin_link, poll_link, is_active, anonymous])
     .then((result) => result.rows[0])
     .catch((err) => {
-      console.log(err.message);
+      console.log(err.message, '203');
     });
 };
 
@@ -224,13 +234,18 @@ app.post("/polls", (req, res) => {
 
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
+  console.log(req.body.anonymous, "humhumuh")
+  let anonymous = false;
+  if (req.body.anonymous === 'on') {
+    anonymous = true;
+  }
 
   mailgunAPI(req.body.email, pollLink, adminLink);
 
   const newPoll = {
     email_address: req.body.email,
     question: req.body.question,
-    anonymous: false,
+    anonymous: anonymous,
     admin_link: adminLink,
     poll_link: pollLink,
     is_active: true
@@ -293,26 +308,35 @@ const createNewVote = (newVote) => {
 app.post("/polls/:id", (req, res) => {
   //console.log("req.body:", req.body);
   //console.log("req.params:", req.params.id);
-  res.status(200).send("ok");
 
+  let name = req.body.name;
+  db.query(`
+    INSERT INTO names (name)
+    VALUES ($1)
+    RETURNING *;
+  `, [name])
+    .then((db) => {
+      console.log(db.rows);
+      //Calculates vote weight of every choice from ranked list
+      const calculateVoteWeight = (choice, rankedArray) => {
+        const index = rankedArray.indexOf(choice);
+        points = rankedArray.length - index;
+        return points;
+      }
+
+      //req.body.rankedChoices = [3,1,2]
+      req.body.rankedChoices.forEach(choiceID => {
+        const newVote = {
+          choice_id: choiceID,
+          vote_weight: calculateVoteWeight(choiceID, req.body.rankedChoices),
+          name_id: db.rows[0].id
+        };
+        createNewVote(newVote);
+      });
+
+    });
   //console.log("i want the array:", req.body.rankedChoices)
 
-  //Calculates vote weight of every choice from ranked list
-  const calculateVoteWeight = (choice, rankedArray) => {
-    const index = rankedArray.indexOf(choice);
-    points = rankedArray.length - index;
-    return points;
-  }
-
-  //req.body.rankedChoices = [3,1,2]
-  req.body.rankedChoices.forEach( choiceID => {
-    const newVote = {
-      choice_id: choiceID,
-      vote_weight: calculateVoteWeight(choiceID, req.body.rankedChoices),
-      name_id: 1,
-    };
-    createNewVote(newVote);
-  })
 
 });
 
