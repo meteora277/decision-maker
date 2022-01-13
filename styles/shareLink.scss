@@ -4,18 +4,21 @@
   flex-direction: column;
   align-items: center;
   margin: 8rem;
+  background: azure;
+  margin-bottom: -58px;
+  margin-top: 90px;
+  padding: 23px;
 }
 
 .blueShareLink {
   font-size: 2rem;
   margin-bottom: 25px;
 }
-.linkbox {
-  width: 388px;
-  border: none;
-  font-size: 25px;
-}
 
+.linkbox {
+  width: 318px;
+  font-size: 20px;
+}
 
 .blueAdminLink {
   font-size: 2rem;
@@ -25,4 +28,68 @@
 .para{
   margin-bottom: 0px;
   font-size: 20px;
+}
+
+.btn-outline-primary {
+  margin-bottom: 5px;
+}
+
+.icons{
+  font-size: 30px;
+  margin-top: 10px;
+}
+
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 70px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 50%;
+}
+
+/* Add a hover effect if you want */
+.fa:hover {
+  opacity: 0.7;
+}
+
+/* Set a specific color for each brand */
+
+/* Facebook */
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+/* Twitter */
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+}
+
+.fa-google {
+  background: #dd4b39;
+  color: white;
+}
+
+.fa-linkedin {
+  background: #007bb5;
+  color: white;
+}
+
+.fa-instagram {
+  background: #125688;
+  color: white;
+}
+
+.fa-snapchat-ghost {
+  background: #fffc00;
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+
+.fa-reddit {
+  background: #ff5700;
+  color: white;
 }

@@ -9,12 +9,15 @@
   <link rel="stylesheet" href="/styles/main.css" type="text/css" />
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
   <link rel="stylesheet" href="/styles/shareLink.css" type="text/css" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="/scripts/app.js"></script>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
 </head>
 
 <body>
@@ -23,13 +26,24 @@
   <div class="share_link_container">
     <div class="jumbotron">
       <h1>Share Link Ready to Share with Friends</h1>
-      <a class="blueShareLink" href="http://localhost:8080/polls/<%= pollLink%>" >Voting page Link</a>
-    <div>
-      <input class="linkbox" type="text" value="http://localhost:8080/polls/<%= pollLink%>" id="myInput">
-    <!-- The button used to copy the text -->
-    <button type="button" class="btn btn-info" onclick="myFunction()">Copy to clipboard</button>
+      <a class="blueShareLink" href="http://localhost:8080/polls/<%= pollLink%>" >Voting Submission Link</a>
+      <div>
+        <input class="linkbox" type="text" value="http://localhost:8080/polls/<%= pollLink%>" id="myInput">
+        <!-- The button used to copy the text -->
+        <button type="button" class="btn btn-outline-primary" onclick="myFunction()">Copy to clipboard</button>
+      </div>
+      <div class="icons">
+        <!-- Add font awesome icons -->
+        <a href="https://www.facebook.com/" class="fa fa-facebook"></a>
+        <a href="https://twitter.com/?lang=en" class="fa fa-twitter"></a>
+        <a href="https://www.google.com/gmail/about/#" class="fa fa-google"></a>
+        <a href="https://www.linkedin.com" class="fa fa-linkedin"></a>
+        <a href="https://www.instagram.com" class="fa fa-instagram"></a>
+        <a href="https://www.snapchat.com" class="fa fa-snapchat-ghost"></a>
+        <a href="https://www.reddit.com" class="fa fa-reddit"></a>
+      </div>
     </div>
-    </div>
+
 
     <div class="jumbotron">
       <h1>Admin link - click to see poll result</h1>
