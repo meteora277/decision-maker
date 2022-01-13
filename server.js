@@ -47,16 +47,55 @@ app.use(
 
 app.use(express.static("public"));
 
-const pollsRoutes = require("./routes/polls");
-const shareRoutes = require("./routes/shareRoutes");
+// Separated Routes for each Resource
+// Note: Feel free to replace the example routes below with your own
+const usersRoutes = require("./routes/users");
+const widgetsRoutes = require("./routes/widgets");
 
-app.use("/polls/:id", pollsRoutes);
-app.use("/share/:id", shareRoutes);
+// Mount all resource routes
+// Note: Feel free to replace the example routes below with your own
+app.use("/api/users", usersRoutes(db));
+app.use("/api/widgets", widgetsRoutes(db));
+// Note: mount other resources here, using the same pattern above
+
 // Home page
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
 app.get("/", (req, res) => {
   res.render("index");
+});
+
+/* //Not using?
+app.get("/polls/new", (req, res) => {
+  res.render("poll_form");
+}); */
+
+app.get("/polls/:id", (req, res) => {
+  getChoicesFromPollLink(req.params.id)
+    .then((response) => {
+      console.log("RESPONSE**:", response);
+
+      const templateVars = {
+        potato: response,
+        poll_id: req.params.id
+      };
+      res.render("show_poll", templateVars);
+    });
+});
+
+app.get("/share/:id", (req, res) => {
+  // write the select queries after getting the id from the parents.
+  // templateVars for the poll
+  let pollLink = req.params.id;
+  getAdminLink(pollLink).then(poll => {
+    //console.log("Testing poll:", poll);
+    let adminLink = poll.admin_link;
+    let templateVars = {
+      pollLink,
+      adminLink,
+    };
+    res.render("links_share", templateVars);
+  });
 });
 
 app.get("/results/:id", (req, res) => {
