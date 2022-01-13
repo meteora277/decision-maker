@@ -305,7 +305,7 @@ const createNewVote = (newVote) => {
 };
 
 app.post("/polls/:id", (req, res) => {
-  //console.log("req.body:", req.body);
+  console.log("123 *** req.body:", req.body);
   //console.log("req.params:", req.params.id);
 
   let name = req.body.name;
