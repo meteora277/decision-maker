@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
   <link rel="stylesheet" href="/styles/main.css" type="text/css" />
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/shareLink.css" type="text/css" />
 
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="/scripts/app.js"></script>
@@ -22,18 +23,20 @@
   <div class="share_link_container">
     <div class="jumbotron">
       <h1>Share Link Ready to Share with Friends</h1>
-      <a href="http://localhost:8080/polls/<%= pollLink%>" >ShareLink</a>
-    </div>
-    <input type="text" value="http://localhost:8080/polls/<%= pollLink%>" id="myInput">
+      <a class="blueShareLink" href="http://localhost:8080/polls/<%= pollLink%>" >Voting page Link</a>
+    <div>
+      <input class="linkbox" type="text" value="http://localhost:8080/polls/<%= pollLink%>" id="myInput">
     <!-- The button used to copy the text -->
-    <button onclick="myFunction()">Copy text to clipboard</button>
+    <button type="button" class="btn btn-info" onclick="myFunction()">Copy to clipboard</button>
+    </div>
+    </div>
 
     <div class="jumbotron">
       <h1>Admin link - click to see poll result</h1>
-      <a href="http://localhost:8080/results/<%= adminLink %>">AdminLink</a>
+      <a class="blueAdminLink" href="http://localhost:8080/results/<%= adminLink %>">Admin Link</a>
+      <p class = "para"> ✅ Only you can see poll result</p>
+      <p class = "para"> ✅ Click after everyone is done poll</p>
     </div>
-    <p> ✅ Only you can see poll result</p>
-    <p> ✅ Click after everyone is done poll</p>
   </div>
 
   <script>
