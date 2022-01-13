@@ -25,26 +25,17 @@ const {
   getAdminLink,
   createNewPoll,
   createNewChoice,
+  createNewVote
 } = require('./db/queries/dbFunctions');
 
-const generateRandomString = function(length = 6) {
-  let result  = '';
-  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
-
+const generateRandomString = require('./lib/generateRandomString');
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
-app.use(morgan("dev"));
 
+app.use(morgan("dev"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
   "/styles",
   sassMiddleware({
@@ -70,7 +61,6 @@ app.use("/api/widgets", widgetsRoutes(db));
 // Home page
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
-
 app.get("/", (req, res) => {
   res.render("index");
 });
@@ -198,20 +188,6 @@ app.post("/polls", (req, res) => {
 });
 
 
-//DATABASE FUNCTION: Insert into vote table
-const createNewVote = async(newVote) => {
-  const {choice_id, vote_weight, name_id} = newVote;
-  return db
-    .query(`
-    INSERT INTO votes (choice_id, vote_weight, name_id)
-    VALUES ( $1, $2 , $3)
-    RETURNING *;
-    `,[choice_id, vote_weight, name_id])
-    .then((result) => console.log("new vote in database:", result.rows[0]))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
 
 app.post("/polls/:id", (req, res) => {
   console.log("123 *** req.body:", req.body);
