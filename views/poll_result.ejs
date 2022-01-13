@@ -32,14 +32,16 @@
 
     </ul>
     <br>
-      <h2>People that have voted so far</h2>
-    <ul>
-      <%  %>
-    </ul>
+
+    <% let filteredArray = names.filter(item => item.name !== null) %>
+
+    <% if (filteredArray.length !== 0) { %>
+    <h1><%='People that have voted so far' %></h1>
     <% for( let i = 0; i < names.length; i++) { %>
-    <li>
-      <%- names[i].name %>
-    </li>
+      <li>
+        <%- names[i].name %>
+      </li>
+      <% } %>
     <% } %>
   </section>
 
