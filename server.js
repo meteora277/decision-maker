@@ -16,8 +16,7 @@ const db = new Pool(dbParams);
 db.connect();
 
 //mailgun API import
-const mailgunPollEmail = require("./mailgun.js")
-
+const {mailgunPollEmail, mailgunVoteNotification} = require("./mailgun.js");
 
 const generateRandomString = function(length = 6) {
   let result  = '';
@@ -73,7 +72,6 @@ app.get("/polls/new", (req, res) => {
 }); */
 
 app.get("/polls/:id", (req, res) => {
-
   getChoicesFromPollLink(req.params.id)
   .then((response) => {
     console.log("RESPONSE**:", response);
@@ -84,7 +82,6 @@ app.get("/polls/:id", (req, res) => {
     }
     res.render("show_poll", templateVars);
   })
-
 });
 
 const getPollIdFromPollLink = async(link) => {
@@ -139,9 +136,7 @@ app.get("/results/:id", (req, res) => {
           res.render("poll_result", templateVars)
         }
         );
-
     });
-
 });
 
 //DATABASE SELECT FUNCTION (not done)
@@ -170,6 +165,20 @@ const getResultsFromAdminLink = async (pollId) => {
     .then(res => res.rows)
     .catch(err => console.log(err));
 
+};
+
+//HELPER FUNCTION to send notification email
+const getLinksFromChoiceID = async (choiceID) => {
+
+  return db.query(`
+    SELECT admin_link, poll_link, email_address
+    FROM choices
+    JOIN polls ON poll_id = polls.id
+    WHERE choices.id = $1
+    LIMIT 1
+  `, [choiceID])
+    .then(res => res.rows)
+    .catch(err => console.log(err));
 };
 
 
@@ -306,7 +315,26 @@ const createNewVote = (newVote) => {
 
 app.post("/polls/:id", (req, res) => {
   console.log("123 *** req.body:", req.body);
+  console.log("456 *** trying to get a choice id", req.body.rankedChoices[0]);
   //console.log("req.params:", req.params.id);
+
+  const firstChoiceID = req.body.rankedChoices[0];
+  //Get email, poll and admin links using first votes choiceID
+  getLinksFromChoiceID(firstChoiceID)
+  .then((result) => {
+    console.log("adminLink", result[0].admin_link, "pollLink", result[0].poll_link, "email_address", result[0].email_address );
+    console.log("DOES THIS HAVE EMAILS AND LINKS", result[0])
+
+    const adminLink = result[0].admin_link;
+    const pollLink = result[0].poll_link;
+    const email_address = result[0].email_address;
+
+    mailgunVoteNotification(email_address, pollLink, adminLink);
+    //mailgunVoteNotification("bita.janzadeh@hotmail.com", "22", '');
+
+  })
+
+
 
   let name = req.body.name;
   db.query(`
@@ -334,7 +362,6 @@ app.post("/polls/:id", (req, res) => {
       });
 
     });
-  //console.log("i want the array:", req.body.rankedChoices)
 
 
 });
