@@ -1,26 +1,51 @@
-// body {
 
-// }
-// .poll-form {
-//   margin: 1rem 5%;
+.poll-form {
+  margin: 3rem 10%;
 
-// }
-// #email-form {
-//   background: rgba(0, 0, 0, 0.6);
-//   height: 100%;
-//   margin-top: 5rem;
-// }
-// .toggle-bg {
-//   position: absolute;
-//   top: 0;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   height: 100%;
-//   width: 100%;
+  form input, button{
+    margin-bottom: 0.8rem;
+  }
+  .poll-question {
+    margin-bottom: 2rem;
+  }
+  .create-poll-btn, .add-option-btn{
+    margin-bottom: 0;
+  }
 
-// }
+}
+#email-form {
+  background: white;
+  border-radius: 0.3rem;
+  padding: 0.5rem 1rem;
+  margin-top: 5rem;
+  margin-left: 10%;
+  margin-right: 10%;
 
-body {
-  margin: 0 10%;
+  input {
+    margin: 0.8rem 0;
+  }
+  button {
+    margin-bottom: 0.8rem;
+  }
+}
+.option-container {
+  margin-bottom: 1.5rem;
+}
+.toggle-bg {
+  background: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+
+}
+
+@media (min-width: 1080px) {
+  .poll-form, #email-form {
+    margin: 3rem 20%;
+  }
+
 }
