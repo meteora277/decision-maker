@@ -4,20 +4,26 @@ Decision Maker is a full stack web application built with Node and Express that 
 
 ## Final Product
 
+### ☑︎ Email requirement
 ![Email requirement](https://github.com/meteora277/decision-maker/blob/master/docs/email_login_requirement.gif?raw=true)
 
+### ☑︎ Poll Submission form with add/remove and anonymous option
 ![Poll Submission form with add/remove and anonymous option](https://github.com/meteora277/decision-maker/blob/master/docs/Poll_Submission.gif?raw=true)
 
+### ☑︎ Links page with share link and admin link
 ![Links page with share link and admin link](https://github.com/meteora277/decision-maker/blob/master/docs/linkShare.gif?raw=true)
 
+### ☑︎ Email notification
 ![Email notification](https://github.com/meteora277/decision-maker/blob/master/docs/4.%20email.png?raw=true)
 
+### ☑︎ Drag and drop feature
 ![Drag and drop feature](https://github.com/meteora277/decision-maker/blob/master/docs/Drag_and_Drop.gif?raw=true)
 
+### ☑︎ Vote result using Borda count
 ![Vote result using Borda count](https://github.com/meteora277/decision-maker/blob/master/docs/vote_result.png?raw=true)
 
+### ☑︎ Tie votes
 ![Tie votes](https://github.com/meteora277/decision-maker/blob/master/docs/7.Tie.png?raw=true)
-
 
 ## Dependencies
 
