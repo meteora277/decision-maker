@@ -7,15 +7,31 @@ const { getResultsFromAdminLink } = require("../db/queries/dbFunctions");
 
 module.exports = (req, res) => {
   let adminLink = req.params.id;
-  console.log("This should be the admin link:", req.params.id);
+  console.log("This should be the admin link:", req.params.id )
 
   getResultsFromAdminLink(adminLink)
-    .then(response => {
-      console.log("This should post the results ****", response);
+    .then( response => {
+      console.log("BEFORE:", response);
+
+      const obj = response[0];
+      //Default being length of responses array for case of all sums are equal
+      let trackIndex = response.length;
+      for (let i = 1; i < response.length; i++) {
+        if (obj.sum !== response[i].sum) {
+          trackIndex = i;
+          break;
+        }
+        let newString = obj.choice + ", " + response[i].choice;
+        obj.choice = newString;
+      }
+      response.splice(0, trackIndex, obj);
+
+      console.log("AFTER RESPONSE:", response);
+
       const templateVars = {
         response
-      };
-      return templateVars;
+      }
+      return templateVars
     })
     .then(templateVars => {
       db.query(`
@@ -24,12 +40,12 @@ module.exports = (req, res) => {
       JOIN polls ON poll_id = polls.id WHERE polls.admin_link = $1;
       `,[adminLink])
         .then(res => {
-          console.log(res.rows);
+          console.log(res.rows)
           return res.rows;
         })
         .then((rows) => {
           templateVars.names = rows;
-          res.render("poll_result", templateVars);
+          res.render("poll_result", templateVars)
         }
         );
     });
