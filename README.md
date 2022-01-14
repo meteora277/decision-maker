@@ -1,6 +1,8 @@
-# Decision Maker Project
+# Decision Maker Project 🤔
 
-Decision Maker is a full stack web application built with Node and Express that allows users to create polls, share polls with friends and see results while recieving email notifications through mailgun. Voters can drag and drop the different choices and the results will show the ranked choices list with the most voted choice highlighted at the top. Poll can also be set to anonymous where voters' names will not be displayed.  
+Decision Maker is a multi-page full stack web application built with Node and Express that allows users to create polls, share polls with friends and see results while recieving email notifications through mailgun. Voters can drag and drop the different choices and the results will show the ranked choices list with the most voted choice highlighted at the top. Poll can also be set to anonymous where voters' names will not be displayed. 
+
+Collaborators: Bita Janzadeh, Saranya Sagi
 
 ## Final Product
 
@@ -19,7 +21,7 @@ Decision Maker is a full stack web application built with Node and Express that 
 ### ☑︎ Drag and drop feature
 ![Drag and drop feature](https://github.com/meteora277/decision-maker/blob/master/docs/Drag_and_Drop.gif?raw=true)
 
-### ☑︎ Vote result using Borda count
+### ☑︎ Votes weighted using Borda count [BORDA COUNT](https://en.wikipedia.org/wiki/Borda_count)
 ![Vote result using Borda count](https://github.com/meteora277/decision-maker/blob/master/docs/vote_result.png?raw=true)
 
 ### ☑︎ Tie votes
@@ -34,6 +36,7 @@ Decision Maker is a full stack web application built with Node and Express that 
 - EJS 2.6.x
 - Express 4.17.x
 - Jquery UI 
+- PostgreSQL
 - Mailgun-js 0.22.x
 - Morgan 1.9.x
 - sass 1.35.x
