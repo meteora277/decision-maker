@@ -128,27 +128,34 @@ function addEventListeners() {
   })
 }
 
-submit.addEventListener('click', () => {
-  rankedOrder();
-  document.getElementsByClassName("choices-list")[0].innerHTML = `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <div class="jumbotron text-center">
-  <h1 class="display-3">Thank You!</h1>
-  <p class="lead"><strong>Please wait </strong> till admin releases vote result after everyone finishes votes.</p>
-  <hr>
-  <p>
-    Know someone who has decision making problems <a href="">Share our website</a>
-    <div class="icons">
-        <!-- Add font awesome icons -->
-        <a href="https://www.facebook.com/" class="fa fa-facebook"></a>
-        <a href="https://twitter.com/?lang=en" class="fa fa-twitter"></a>
-        <a href="https://www.google.com/gmail/about/#" class="fa fa-google"></a>
-        <a href="https://www.linkedin.com" class="fa fa-linkedin"></a>
-        <a href="https://www.instagram.com" class="fa fa-instagram"></a>
-        <a href="https://www.snapchat.com" class="fa fa-snapchat-ghost"></a>
-        <a href="https://www.reddit.com" class="fa fa-reddit"></a>
-      </div>
-  </p>
-  <p class="lead">
-    <a class="btn btn-outline-primary" href="/" role="button">Make your own poll</a>
-  </p>
-</div>`;
+submit.addEventListener('click', function(event) {
+  event.preventDefault();
+  $('.alert-danger').remove()
+  if (!$('#name').val()) {
+    $('#name').after('<div class="alert alert-danger">Please enter your name</div>')
+  } else {
+    rankedOrder();
+    document.getElementsByClassName("choices-list")[0].innerHTML = `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <div class="jumbotron text-center">
+    <h1 class="display-3">Thank You!</h1>
+    <p class="lead"><strong>Please wait </strong> till admin releases vote result after everyone finishes votes.</p>
+    <hr>
+    <p>
+      Know someone who has decision making problems <a href="">Share our website</a>
+      <div class="icons">
+          <!-- Add font awesome icons -->
+          <a href="https://www.facebook.com/" class="fa fa-facebook"></a>
+          <a href="https://twitter.com/?lang=en" class="fa fa-twitter"></a>
+          <a href="https://www.google.com/gmail/about/#" class="fa fa-google"></a>
+          <a href="https://www.linkedin.com" class="fa fa-linkedin"></a>
+          <a href="https://www.instagram.com" class="fa fa-instagram"></a>
+          <a href="https://www.snapchat.com" class="fa fa-snapchat-ghost"></a>
+          <a href="https://www.reddit.com" class="fa fa-reddit"></a>
+        </div>
+    </p>
+    <p class="lead">
+      <a class="btn btn-outline-primary" href="/" role="button">Make your own poll</a>
+    </p>
+  </div>`;
+  }
+
 });
