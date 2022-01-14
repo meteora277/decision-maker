@@ -51,11 +51,15 @@ app.use(express.static("public"));
 // Note: Feel free to replace the example routes below with your own
 const usersRoutes = require("./routes/users");
 const widgetsRoutes = require("./routes/widgets");
-
+const shareRoutes = require("./routes/shareRoutes");
+const resultsRoutes = require('./routes/resultsRoutes');
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 app.use("/api/users", usersRoutes(db));
 app.use("/api/widgets", widgetsRoutes(db));
+
+app.use("/share/:id", shareRoutes);
+app.use('/results/:id', resultsRoutes);
 // Note: mount other resources here, using the same pattern above
 
 // Home page
@@ -64,11 +68,6 @@ app.use("/api/widgets", widgetsRoutes(db));
 app.get("/", (req, res) => {
   res.render("index");
 });
-
-/* //Not using?
-app.get("/polls/new", (req, res) => {
-  res.render("poll_form");
-}); */
 
 app.get("/polls/:id", (req, res) => {
   getChoicesFromPollLink(req.params.id)
@@ -80,51 +79,6 @@ app.get("/polls/:id", (req, res) => {
         poll_id: req.params.id
       };
       res.render("show_poll", templateVars);
-    });
-});
-
-app.get("/share/:id", (req, res) => {
-  // write the select queries after getting the id from the parents.
-  // templateVars for the poll
-  let pollLink = req.params.id;
-  getAdminLink(pollLink).then(poll => {
-    //console.log("Testing poll:", poll);
-    let adminLink = poll.admin_link;
-    let templateVars = {
-      pollLink,
-      adminLink,
-    };
-    res.render("links_share", templateVars);
-  });
-});
-
-app.get("/results/:id", (req, res) => {
-  let adminLink = req.params.id;
-  console.log("This should be the admin link:", req.params.id);
-
-  getResultsFromAdminLink(adminLink)
-    .then( response => {
-      console.log("This should post the results ****", response);
-      const templateVars = {
-        response
-      };
-      return templateVars;
-    })
-    .then(templateVars => {
-      db.query(`
-      SELECT DISTINCT names.* FROM names JOIN votes ON name_id = names.id
-      JOIN choices ON choice_id = choices.id
-      JOIN polls ON poll_id = polls.id WHERE polls.admin_link = $1;
-      `,[adminLink])
-        .then(res => {
-          console.log(res.rows);
-          return res.rows;
-        })
-        .then((rows) => {
-          templateVars.names = rows;
-          res.render("poll_result", templateVars);
-        }
-        );
     });
 });
 
@@ -187,9 +141,8 @@ app.post("/polls", (req, res) => {
     });
 });
 
-
-
 app.post("/polls/:id", (req, res) => {
+
   console.log("123 *** req.body:", req.body);
   console.log("456 *** trying to get a choice id", req.body.rankedChoices[0]);
   //console.log("req.params:", req.params.id);
@@ -209,8 +162,6 @@ app.post("/polls/:id", (req, res) => {
       //mailgunVoteNotification("bita.janzadeh@hotmail.com", "22", '');
 
     });
-
-
 
   let name = req.body.name;
   db.query(`
