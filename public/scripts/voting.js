@@ -130,5 +130,15 @@ function addEventListeners() {
 
 submit.addEventListener('click', () => {
   rankedOrder();
-  document.getElementsByClassName("choices-list")[0].innerHTML = "<h1> Thank you for voting! </h1>";
+  document.getElementsByClassName("choices-list")[0].innerHTML = `<div class="jumbotron text-center">
+  <h1 class="display-3">Thank You!</h1>
+  <p class="lead"><strong>Please wait </strong> till admin releases vote result after everyone finishes votes.</p>
+  <hr>
+  <p>
+    Know someone who has decision making problems <a href="">Share our website</a>
+  </p>
+  <p class="lead">
+    <a class="btn btn-outline-primary" href="/" role="button">Make your own poll</a>
+  </p>
+</div>`;
 });
