@@ -49,7 +49,6 @@
       <h1>Admin link - click to see poll result</h1>
       <a class="blueAdminLink" href="http://localhost:8080/results/<%= adminLink %>">Admin Link</a>
       <p class = "para"> ✅ Only you can see poll result</p>
-      <p class = "para"> ✅ Click after everyone is done poll</p>
     </div>
   </div>
 
@@ -66,10 +65,10 @@
   navigator.clipboard
     .writeText(copyText.value)
     .then(() => {
-        alert("successfully copied");
+        alert("Successfully copied");
       })
       .catch(() => {
-        alert("something went wrong");
+        alert("Something went wrong");
       });
 }
   </script>
