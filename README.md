@@ -1,4 +1,31 @@
-LHL Node Skeleton
+# Decision Maker Project
+
+Decision Maker is a full stack web application built with Node and Express that allows users to create polls, share polls with friends and see results while recieving email notifications through mailgun. Voters can drag and drop the different choices and the results will show the choices with the most voted choice highlighted at the top. Poll can also be set to anonymous where voters' names will not be displayed.  
+
+## Final Product
+
+![""]()
+
+![""]()
+
+![""]()
+
+![""]()
+
+![""]()
+
+
+## Dependencies
+
+- Node 10.x or above
+- NPM 5.x or above
+- PG 6.x
+
+- (ejs)
+- (express)
+- (mailgun-js)
+
+<!-- LHL Node Skeleton
 =========
 
 ## Project Setup
@@ -40,4 +67,4 @@ The following steps are only for _one_ of the group members to perform.
 
 - Node 10.x or above
 - NPM 5.x or above
-- PG 6.x
+- PG 6.x -->
