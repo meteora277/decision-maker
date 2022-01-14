@@ -18,24 +18,22 @@ db.connect();
 //mailgun API import
 const {mailgunPollEmail, mailgunVoteNotification} = require("./mailgun.js");
 
-const generateRandomString = function(length = 6) {
-  let result  = '';
-  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
+const {
+  getLinksFromChoiceID,
+  getChoicesFromPollLink,
+  createNewPoll,
+  createNewChoice,
+  createNewVote
+} = require('./db/queries/dbFunctions');
 
+const generateRandomString = require('./lib/generateRandomString');
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
-app.use(morgan("dev"));
 
+app.use(morgan("dev"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
   "/styles",
   sassMiddleware({
@@ -51,216 +49,44 @@ app.use(express.static("public"));
 // Note: Feel free to replace the example routes below with your own
 const usersRoutes = require("./routes/users");
 const widgetsRoutes = require("./routes/widgets");
-
+const shareRoutes = require("./routes/shareRoutes");
+const resultsRoutes = require('./routes/resultsRoutes');
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 app.use("/api/users", usersRoutes(db));
 app.use("/api/widgets", widgetsRoutes(db));
+
+app.use("/share/:id", shareRoutes);
+app.use('/results/:id', resultsRoutes);
 // Note: mount other resources here, using the same pattern above
 
 // Home page
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
-
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-/* //Not using?
-app.get("/polls/new", (req, res) => {
-  res.render("poll_form");
-}); */
-
 app.get("/polls/:id", (req, res) => {
   getChoicesFromPollLink(req.params.id)
-  .then((response) => {
-    console.log("RESPONSE**:", response);
-
-    const templateVars = {
-      potato: response,
-      poll_id: req.params.id
-    }
-
-
-    res.render("show_poll", templateVars);
-  })
-});
-
-const getPollIdFromPollLink = async(link) => {
-  return db.query(`
-    SELECT * FROM polls
-    WHERE poll_link = $1;
-  `, [link])
-    .then(res => res.rows[0])
-    .catch(err => console.log(err));
-};
-
-
-app.get("/share/:id", (req, res) => {
-  // write the select queries after getting the id from the parents.
-  // templateVars for the poll
-  let pollLink = req.params.id;
-  getAdminLink(pollLink).then(poll => {
-    //console.log("Testing poll:", poll);
-    let adminLink = poll.admin_link
-    let templateVars = {
-      pollLink,
-      adminLink,
-    }
-    res.render("links_share", templateVars);
-  })
-});
-
-app.get("/results/:id", (req, res) => {
-  let adminLink = req.params.id;
-  console.log("This should be the admin link:", req.params.id )
-
-  getResultsFromAdminLink(adminLink)
-    .then( response => {
-      console.log("BEFORE:", response);
-
-      const obj = response[0];
-      //Default being length of responses array for case of all sums are equal
-      let trackIndex = response.length;
-      for (let i = 1; i < response.length; i++) {
-        if (obj.sum !== response[i].sum) {
-          trackIndex = i;
-          break;
-        }
-        let newString = obj.choice + ", " + response[i].choice;
-        obj.choice = newString;
-      }
-      response.splice(0, trackIndex, obj);
-
-      console.log("AFTER RESPONSE:", response);
+    .then((response) => {
+      console.log("RESPONSE**:", response);
 
       const templateVars = {
-        response
-      }
-      return templateVars
-    })
-    .then(templateVars => {
-      db.query(`
-      SELECT DISTINCT names.* FROM names JOIN votes ON name_id = names.id
-      JOIN choices ON choice_id = choices.id
-      JOIN polls ON poll_id = polls.id WHERE polls.admin_link = $1;
-      `,[adminLink])
-        .then(res => {
-          console.log(res.rows)
-          return res.rows;
-        })
-        .then((rows) => {
-          templateVars.names = rows;
-          res.render("poll_result", templateVars)
-        }
-        );
+        potato: response,
+        poll_id: req.params.id
+      };
+
+
+      res.render("show_poll", templateVars);
     });
 });
-
-//DATABASE SELECT FUNCTION (not done)
-/* const getChoiceId = (s) => {
-  return db
-    .query(`SELECT * FROM choices
-    WHERE poll_link = $1;`,
-    [pollLink])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message);
-    });
-}; */
-
-//DELETE? DATABSE SELECTION FUNCTION using admin link (choice and description)
-const getResultsFromAdminLink = async (pollId) => {
-
-  return db.query(`
-    SELECT title AS choice, sum(votes.vote_weight)
-    FROM votes JOIN choices ON choice_id = choices.id
-    JOIN polls ON poll_id = polls.id
-    WHERE admin_link = $1
-    GROUP BY choices.title, polls.id
-    ORDER BY sum(votes.vote_weight) DESC;
-  `, [pollId])
-    .then(res => res.rows)
-    .catch(err => console.log(err));
-
-};
-
-//HELPER FUNCTION to send notification email
-const getLinksFromChoiceID = async (choiceID) => {
-
-  return db.query(`
-    SELECT admin_link, poll_link, email_address
-    FROM choices
-    JOIN polls ON poll_id = polls.id
-    WHERE choices.id = $1
-    LIMIT 1
-  `, [choiceID])
-    .then(res => res.rows)
-    .catch(err => console.log(err));
-};
-
-
-//DATABSE SELECTION FUNCTION using poll link (choice and description)
-const getChoicesFromPollLink = async (pollId) => {
-  return db.query(`
-    SELECT choices.id, title AS choice, choices.description, polls.question, anonymous
-    FROM choices JOIN polls ON poll_id = polls.id
-    WHERE poll_link = $1 GROUP BY choices.id, choices.title, polls.id, choices.description
-  `, [pollId])
-    .then(res => res.rows)
-    .catch(err => console.log(err));
-};
-
-getChoicesFromPollLink(1)
-.then((res) => console.log(res));
-
-//DATABASE SELECT FUNCTION
-const getAdminLink = (pollLink) => {
-  return db
-    .query(`SELECT * FROM polls
-    WHERE poll_link = $1;`,
-    [pollLink])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
-//DATABASE FUNCTION
-const createNewPoll = (poll) => {
-  const {email_address, question, anonymous, admin_link, poll_link, is_active} = poll;
-  return db
-    .query(`INSERT INTO polls (email_address, question, admin_link, poll_link, is_active, anonymous)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING *; `,
-    [email_address, question, admin_link, poll_link, is_active, anonymous])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message, '203');
-    });
-};
-
-//DATABASE FUNCTION
-const createNewChoice = (choice) => {
-  const {poll_id, title, description} = choice;
-  return db
-    .query(`
-    INSERT INTO choices (poll_id, title, description)
-    VALUES ( $1, $2 , $3)
-    RETURNING *;
-    `,[poll_id, title, description])
-    .then((result) => result.rows[0])
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
 
 app.post("/polls", (req, res) => {
 
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
-  console.log(req.body.anonymous, "humhumuh")
+  console.log(req.body.anonymous, "humhumuh");
   let anonymous = false;
   if (req.body.anonymous === 'on') {
     anonymous = true;
@@ -315,23 +141,8 @@ app.post("/polls", (req, res) => {
     });
 });
 
-
-//DATABASE FUNCTION: Insert into vote table
-const createNewVote = (newVote) => {
-  const {choice_id, vote_weight, name_id} = newVote;
-  return db
-    .query(`
-    INSERT INTO votes (choice_id, vote_weight, name_id)
-    VALUES ( $1, $2 , $3)
-    RETURNING *;
-    `,[choice_id, vote_weight, name_id])
-    .then((result) => console.log("new vote in database:", result.rows[0]))
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-
 app.post("/polls/:id", (req, res) => {
+
   console.log("123 *** req.body:", req.body);
   console.log("456 *** trying to get a choice id", req.body.rankedChoices[0]);
   //console.log("req.params:", req.params.id);
@@ -339,20 +150,18 @@ app.post("/polls/:id", (req, res) => {
   const firstChoiceID = req.body.rankedChoices[0];
   //Get email, poll and admin links using first votes choiceID
   getLinksFromChoiceID(firstChoiceID)
-  .then((result) => {
-    console.log("adminLink", result[0].admin_link, "pollLink", result[0].poll_link, "email_address", result[0].email_address );
-    console.log("DOES THIS HAVE EMAILS AND LINKS", result[0])
+    .then((result) => {
+      console.log("adminLink", result[0].admin_link, "pollLink", result[0].poll_link, "email_address", result[0].email_address);
+      console.log("DOES THIS HAVE EMAILS AND LINKS", result[0]);
 
-    const adminLink = result[0].admin_link;
-    const pollLink = result[0].poll_link;
-    const email_address = result[0].email_address;
+      const adminLink = result[0].admin_link;
+      const pollLink = result[0].poll_link;
+      const email_address = result[0].email_address;
 
-    mailgunVoteNotification(email_address, pollLink, adminLink);
-    //mailgunVoteNotification("bita.janzadeh@hotmail.com", "22", '');
+      mailgunVoteNotification(email_address, pollLink, adminLink);
+      //mailgunVoteNotification("bita.janzadeh@hotmail.com", "22", '');
 
-  })
-
-
+    });
 
   let name = req.body.name;
   db.query(`
@@ -365,9 +174,9 @@ app.post("/polls/:id", (req, res) => {
       //Calculates vote weight of every choice from ranked list
       const calculateVoteWeight = (choice, rankedArray) => {
         const index = rankedArray.indexOf(choice);
-        points = rankedArray.length - index;
+        let points = rankedArray.length - index;
         return points;
-      }
+      };
 
       //req.body.rankedChoices = [3,1,2]
       req.body.rankedChoices.forEach(choiceID => {
