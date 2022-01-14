@@ -80,6 +80,8 @@ app.get("/polls/:id", (req, res) => {
       potato: response,
       poll_id: req.params.id
     }
+
+
     res.render("show_poll", templateVars);
   })
 });
@@ -115,7 +117,23 @@ app.get("/results/:id", (req, res) => {
 
   getResultsFromAdminLink(adminLink)
     .then( response => {
-      console.log("This should post the results ****", response);
+      console.log("BEFORE:", response);
+
+      const obj = response[0];
+      //Default being length of responses array for case of all sums are equal
+      let trackIndex = response.length;
+      for (let i = 1; i < response.length; i++) {
+        if (obj.sum !== response[i].sum) {
+          trackIndex = i;
+          break;
+        }
+        let newString = obj.choice + ", " + response[i].choice;
+        obj.choice = newString;
+      }
+      response.splice(0, trackIndex, obj);
+
+      console.log("AFTER RESPONSE:", response);
+
       const templateVars = {
         response
       }
