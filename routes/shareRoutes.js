@@ -5,7 +5,6 @@ module.exports = (req, res) => {
   // templateVars for the poll
   let pollLink = req.params.id;
   getAdminLink(pollLink).then(poll => {
-    //console.log("Testing poll:", poll);
     let adminLink = poll.admin_link;
     let templateVars = {
       pollLink,

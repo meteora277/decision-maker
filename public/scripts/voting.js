@@ -1,7 +1,6 @@
 const draggable_list = document.getElementById('draggable-list');
 const submit = document.getElementById('submit-poll-btn');
 
-console.log("POTATOOO??", window.potato);
 
 const myChoices = [];
 
@@ -10,19 +9,7 @@ window.potato.forEach( potato => {
   myChoices.push(holder);
 })
 
-//console.log("new choices:", choices);
 
-//hard-coding array in original order
-/* const myChoices = [
-  //{id: 1, title: "apple", description: "keeps dr away"},
-  [1, 'apple', 'keeps the doctor away'],
-  [2, 'orange','lots of vitamin C'],
-  [3, 'banana','lotsa potassium'],
-  [4, 'watermelon', 'green on outside, red on inside'],
-  [5, 'pomegrante', 'best fruit ever'],
-  [6, 'strawberry', 'not really a berry apparently']
-];
- */
 const rankedChoices = [];
 
 //Store listitems
@@ -57,13 +44,9 @@ function rankedOrder() {
     const choiceName= listItem.querySelector('.draggable').getAttribute("data-choice").trim();
     rankedChoices.push(choiceName);
   })
-  console.log("array of ranked choices:", rankedChoices);
-  rankedChoices.forEach(choice => {console.log(choice)})
 
   //Using AJAX to POST rankedChoices array to server
-  console.log("rankedChoices", {rankedChoices});
   $.post(`/polls/${window.poll_id}` , {rankedChoices, name: $('#name').val()}, function(data){
-    console.log("Data:", data);
   })
 }
 

@@ -11,7 +11,6 @@ module.exports = (req, res) => {
 
   getResultsFromAdminLink(adminLink)
     .then( response => {
-      console.log("BEFORE:", response);
 
       const obj = response[0];
       //Default being length of responses array for case of all sums are equal
@@ -25,7 +24,6 @@ module.exports = (req, res) => {
         obj.choice = newString;
       }
       response.splice(0, trackIndex, obj);
-      console.log("AFTER RESPONSE:", response);
 
       if (response[0] === undefined) {
         response = [];

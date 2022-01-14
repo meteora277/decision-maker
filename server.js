@@ -70,7 +70,6 @@ app.get("/", (req, res) => {
 app.get("/polls/:id", (req, res) => {
   getChoicesFromPollLink(req.params.id)
     .then((response) => {
-      console.log("RESPONSE**:", response);
 
       const templateVars = {
         potato: response,
@@ -86,7 +85,6 @@ app.post("/polls", (req, res) => {
 
   const pollLink = generateRandomString();
   const adminLink = generateRandomString();
-  console.log(req.body.anonymous, "humhumuh");
   let anonymous = false;
   if (req.body.anonymous === 'on') {
     anonymous = true;
@@ -103,10 +101,8 @@ app.post("/polls", (req, res) => {
     is_active: true
   };
 
-  //console.log("New Poll:", newPoll);
   createNewPoll(newPoll)
     .then((createdPoll) => {
-      console.log("For testing:", req.body);
       let keys = Object.keys(req.body);
       let filteredTitles = [];
 
@@ -133,26 +129,17 @@ app.post("/polls", (req, res) => {
         createNewChoice(newChoice);
       });
 
-      console.log(createdPoll, 'hewwo');
-      console.log(filteredDescriptions);
-      console.log(filteredTitles);
-
       res.redirect(`/share/${pollLink}`);
     });
 });
 
 app.post("/polls/:id", (req, res) => {
 
-  console.log("123 *** req.body:", req.body);
-  console.log("456 *** trying to get a choice id", req.body.rankedChoices[0]);
-  //console.log("req.params:", req.params.id);
 
   const firstChoiceID = req.body.rankedChoices[0];
   //Get email, poll and admin links using first votes choiceID
   getLinksFromChoiceID(firstChoiceID)
     .then((result) => {
-      console.log("adminLink", result[0].admin_link, "pollLink", result[0].poll_link, "email_address", result[0].email_address);
-      console.log("DOES THIS HAVE EMAILS AND LINKS", result[0]);
 
       const adminLink = result[0].admin_link;
       const pollLink = result[0].poll_link;
@@ -170,7 +157,6 @@ app.post("/polls/:id", (req, res) => {
     RETURNING *;
   `, [name])
     .then((db) => {
-      console.log(db.rows);
       //Calculates vote weight of every choice from ranked list
       const calculateVoteWeight = (choice, rankedArray) => {
         const index = rankedArray.indexOf(choice);
