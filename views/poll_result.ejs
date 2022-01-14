@@ -27,39 +27,43 @@
     <h2> Results </h2>
     <div id="results-list">
 
-      <div class="response-results">
+      <% response %>
+      <% if (response.length === 1) { %>
+      <h2>NO ONE VOTED YET LOSER</h2>
+      <% } else { %>
+        <div class="response-results">
 
 
-        <ul>
-          <li class="result-title">
-            <div class="result-label">
-              Choice
-            </div>
-            <div class ="sum-title"> Points  </div>
-          </li>
-
-          <% %>
-
-          <% for (let item of response) { %>
-            <li class="result-item"> <%= item.choice %>
-              <div class ="sum"> <%= item.sum %>  </div>
+          <ul>
+            <li class="result-title">
+              <div class="result-label">
+                Choice
+              </div>
+              <div class ="sum-title"> Points  </div>
             </li>
-          <% } %>
-          </ul>
-        </div>
-        <br>
-        <% let filteredArray = names.filter(item => item.name !== null) %>
-        <% if (filteredArray.length !== 0) { %>
-          <div class="who-voted">
-            <h2><%='People that have voted so far' %></h2>
-            <% for( let i = 0; i < names.length; i++) { %>
-              <li class="voters">
-                <%- names[i].name %>
+
+            <% for (let item of response) { %>
+              <li class="result-item"> <%= item.choice %>
+                <div class ="sum"> <%= item.sum %>  </div>
               </li>
               <% } %>
+            </ul>
+          </div>
+          <br>
+
+          <% let filteredArray = names.filter(item => item.name !== null) %>
+          <% if (filteredArray.length !== 0) { %>
+            <div class="who-voted">
+              <h2><%='People that have voted so far' %></h2>
+              <% for( let i = 0; i < names.length; i++) { %>
+                <li class="voters">
+                  <%- names[i].name %>
+                </li>
+                <% } %>
+                <% } %>
+              </div>
               <% } %>
             </div>
-          </div>
-      </section>
+        </section>
     </body>
   </html>

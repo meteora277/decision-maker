@@ -132,10 +132,6 @@ app.get("/results/:id", (req, res) => {
       }
       response.splice(0, trackIndex, obj);
 
-      if (response.length === 0) {
-        response = [{choice: "", sum: 0}];
-      }
-
       console.log("AFTER RESPONSE:", response);
 
       const templateVars = {
