@@ -25,8 +25,11 @@ module.exports = (req, res) => {
         obj.choice = newString;
       }
       response.splice(0, trackIndex, obj);
-
       console.log("AFTER RESPONSE:", response);
+
+      if (response[0] === undefined) {
+        response = [];
+      }
 
       const templateVars = {
         response

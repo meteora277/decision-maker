@@ -28,8 +28,8 @@
     <div id="results-list">
 
       <% response %>
-      <% if (response.length === 1) { %>
-      <h2>NO ONE VOTED YET LOSER</h2>
+      <% if (response.length === 0) { %>
+      <h2>Oops, no one has voted yet!</h2>
       <% } else { %>
         <div class="response-results">
 
