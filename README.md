@@ -28,12 +28,16 @@ Decision Maker is a full stack web application built with Node and Express that 
 ## Dependencies
 
 - Node 10.x or above
-- NPM 5.x or above
-- PG 6.x
-
-- (ejs)
-- (express)
-- (mailgun-js)
+- Node
+- NPM
+- dotenv
+- EJS
+- Express
+- Jquery UI
+- Mailgun-js
+- Morgan
+- Node-sass-middleware
+- postgres
 
 <!-- LHL Node Skeleton
 =========
