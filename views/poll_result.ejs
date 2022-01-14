@@ -29,6 +29,7 @@
 
       <div class="response-results">
 
+
         <ul>
           <li class="result-title">
             <div class="result-label">
@@ -37,19 +38,19 @@
             <div class ="sum-title"> Points  </div>
           </li>
 
+          <% const arr = []; %>
+          <% for (let item of response) { %>
+          <% } %>
 
           <% for (let item of response) { %>
-            <li class="result-item"><%= item.choice %>
+            <li class="result-item"> <%= item.choice %>
               <div class ="sum"> <%= item.sum %>  </div>
             </li>
-            <% } %>
-
+          <% } %>
           </ul>
         </div>
         <br>
-
         <% let filteredArray = names.filter(item => item.name !== null) %>
-
         <% if (filteredArray.length !== 0) { %>
           <div class="who-voted">
             <h2><%='People that have voted so far' %></h2>
