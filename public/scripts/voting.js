@@ -129,11 +129,7 @@ function addEventListeners() {
 }
 
 submit.addEventListener('click', function(event) {
-  event.preventDefault();
-  $('.alert-danger').remove()
-  if (!$('#name').val()) {
-    $('#name').after('<div class="alert alert-danger">Please enter your name</div>')
-  } else {
+
     rankedOrder();
     document.getElementsByClassName("choices-list")[0].innerHTML = `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <div class="jumbotron text-center">
     <h1 class="display-3">Thank You!</h1>
@@ -156,6 +152,6 @@ submit.addEventListener('click', function(event) {
       <a class="btn btn-outline-primary" href="/" role="button">Make your own poll</a>
     </p>
   </div>`;
-  }
+
 
 });
