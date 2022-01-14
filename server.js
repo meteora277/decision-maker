@@ -19,10 +19,8 @@ db.connect();
 const {mailgunPollEmail, mailgunVoteNotification} = require("./mailgun.js");
 
 const {
-  getResultsFromAdminLink,
   getLinksFromChoiceID,
   getChoicesFromPollLink,
-  getAdminLink,
   createNewPoll,
   createNewChoice,
   createNewVote
